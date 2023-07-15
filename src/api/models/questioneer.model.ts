@@ -1,7 +1,7 @@
 import { Types, Schema, model } from 'mongoose';
 import userBasics from './common.model';
 
-const Product = model('Product', new Schema({
+const qluestioneer = model('qluestioneer', new Schema({
   title: {
     type: String,
     max: 150,
@@ -85,5 +85,5 @@ const Product = model('Product', new Schema({
     type: Types.ObjectId,
     ref: 'Brand',
   },
-}), 'product');
-export default Product;
+}), 'qluestioneer');
+export default qluestioneer;

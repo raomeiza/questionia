@@ -2,15 +2,15 @@ import { Response, Post, Request, Route, Res, TsoaResponse, Tags, FormField, Upl
 import express from "express";
 import fileHandler from "../utils/file-handler";
 import { handleErrorResponse } from '../utils/response-handler';
-import ProductService from "../services/product.service";
+import qluestioneerervice from "../services/questioneer.service";
 import decodeTokenMiddleware from "../middlewares/auth";
 import { refreshToken } from "../utils/tokenizer";
 import productValidation from '../validations/product.validation';
 import IProduct from '../interfaces/product.interface'
 
 
-@Route("products")
-@Tags("Products")
+@Route("qluestioneer")
+@Tags("qluestioneer")
 export class ProductController extends Controller {
   
   @Response(201, 'Registered successfully')
@@ -63,7 +63,7 @@ export class ProductController extends Controller {
         uploaded_by: thisUser.userId
       }
       await productValidation.validateAsync(details)
-      const product = await ProductService.create(details)
+      const product = await qluestioneerervice.create(details)
       
       const jwt = await refreshToken(thisUser)
       sendSuccess(201, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
@@ -125,7 +125,7 @@ export class ProductController extends Controller {
       }
       //@ts-ignore
       request.files?.length && (update.images = request.files.map((file: any) => file.filename+'.'+file.originalname.split('.').pop()))
-      const product = await ProductService.create
+      const product = await qluestioneerervice.create
       const jwt = await refreshToken(thisUser)
       sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
@@ -153,7 +153,7 @@ export class ProductController extends Controller {
       if(!thisUser.is_admin) {
         throw { status: 401, message: 'Unauthorized' }
       }
-      const product = await ProductService.delete(body.productId);
+      const product = await qluestioneerervice.delete(body.productId);
       const jwt = await refreshToken(thisUser)
       sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
@@ -162,10 +162,10 @@ export class ProductController extends Controller {
     }
   }
 
-  @Get("products")
-  @Response(200, 'Products fetched successfully')
-  @Response(404, 'Products not found')
-  public async getProducts(
+  @Get("qluestioneer")
+  @Response(200, 'qluestioneer fetched successfully')
+  @Response(404, 'qluestioneer not found')
+  public async getqluestioneer(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any  }>,
     @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object  }>,
     @Request() request: express.Request,
@@ -175,8 +175,8 @@ export class ProductController extends Controller {
         //@ts-ignore
         const thisUser = request.decodedUser
         const jwt = await refreshToken(thisUser)
-      const products = await ProductService.getAll();
-      return sendSuccess(200, { success: true, data: products}, /* set the jwt */ { 'x-auth-token': jwt })
+      const qluestioneer = await qluestioneerervice.getAll();
+      return sendSuccess(200, { success: true, data: qluestioneer}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);
@@ -197,7 +197,7 @@ export class ProductController extends Controller {
       //@ts-ignore
       const thisUser = request.decodedUser
       const jwt = await refreshToken(thisUser)
-      const product = await ProductService.get(id);
+      const product = await qluestioneerervice.get(id);
       sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore

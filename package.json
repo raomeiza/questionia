@@ -7,6 +7,7 @@
   "proxy": "http://localhost:5002",
   "scripts": {
     "start": "node ./dist/app.js ",
+    "dev": "start node ./dist/app.js && start http://localhost:5002/api-docs",
     "lint": "eslint",
     "build:dev": "tsoa routes && tsoa spec && tsc -p . --watch",
     "build:watch": "tsc -p .",
@@ -14,8 +15,8 @@
     "routes": "tsoa routes",
     "spec": "tsoa spec",
     "swagger": "tsoa spec",
-    "docker:build": " tsc && docker build -t peddle .",
-    "docker:run": "docker run -p 5001:5001 peddle",
+    "docker:build": " tsc && docker build -t questionia .",
+    "docker:run": "docker run -p 5001:5001 questionia",
     "docker:compose": "docker-compose up --build",
     "docker:compose:down": "docker-compose down",
     "test": "jest --watchAll --coverage"

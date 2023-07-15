@@ -1,21 +1,21 @@
-import Product from '../models/product.model';
-import IProduct from '../interfaces/product.interface';
+import Product from '../models/questioneer.model';
+import IProduct from '../interfaces/questioneer.interface';
 
 
-interface IProductService {
+interface Iqluestioneerervice {
   create(resource: IProduct): Promise<any>;
   update(id: string, resource: IProduct): Promise<any>;
   delete(id: string): Promise<any>;
   get(id: string): Promise<any>;
   getAll(): Promise<any>;
-  getProductsByCategory(category: string): Promise<any>;
-  getProductsByCharacteristics(
+  getqluestioneerByCategory(category: string): Promise<any>;
+  getqluestioneerByCharacteristics(
     characteristics: 'brand' | 'price' | 'discount' | 'rating' | 'category',
     value: string
   ): Promise<any>;
 }
 
-class ProductService implements IProductService {
+class qluestioneerervice implements Iqluestioneerervice {
   async create(resource: IProduct) {
     try {
       return await Product.create(resource);
@@ -62,9 +62,9 @@ class ProductService implements IProductService {
     }
   }
 
-  async getProductsByCategory(category: string) {
+  async getqluestioneerByCategory(category: string) {
     try {
-      return await Product.find({ $where: `this.category == ${category}` }).orFail(new Error('No products found for this category'));
+      return await Product.find({ $where: `this.category == ${category}` }).orFail(new Error('No qluestioneer found for this category'));
     } catch (err: any) {
       throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
 
@@ -72,10 +72,10 @@ class ProductService implements IProductService {
 
   }
 
-  async getProductsByCharacteristics(characteristics: 'brand' | 'price' | 'discount' | 'rating' | 'category', value: string) {
+  async getqluestioneerByCharacteristics(characteristics: 'brand' | 'price' | 'discount' | 'rating' | 'category', value: string) {
 
     try {
-      return await Product.find({ $where: `this.${characteristics} == ${value}` }).orFail(new Error('No products found for this category'));
+      return await Product.find({ $where: `this.${characteristics} == ${value}` }).orFail(new Error('No qluestioneer found for this category'));
     }
     catch (err: any) {
       throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
@@ -84,4 +84,4 @@ class ProductService implements IProductService {
   }
 }
 
-export default new ProductService();
+export default new qluestioneerervice();

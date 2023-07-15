@@ -1,4 +1,4 @@
-interface IProduct {
+interface Iqluestioneer {
   title?: string;
   in_stock?: boolean;
   quantity?: number;
@@ -20,4 +20,4 @@ interface IProduct {
   uploaded_by?: string;
 }
 
-export default IProduct;
+export default Iqluestioneer;

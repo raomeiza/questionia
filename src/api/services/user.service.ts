@@ -1,4 +1,3 @@
-import validator from 'validator'
 import { handleCastErrorExceptionForInvalidObjectId, isCastError, throwError } from '../utils/handle-error'
 import User from '../models/users.model'
 import { Types } from 'mongoose'
