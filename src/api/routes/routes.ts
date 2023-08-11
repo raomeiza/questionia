@@ -3,6 +3,8 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse, fetchMiddlewares } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { formController } from './../controllers/forms.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { userController } from './../controllers/user.controller';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
@@ -10,6 +12,73 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "Input": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "label": {"dataType":"string","required":true},
+            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["email"]},{"dataType":"enum","enums":["password"]},{"dataType":"enum","enums":["text"]},{"dataType":"enum","enums":["mobile"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["time"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["datetime"]},{"dataType":"enum","enums":["radio"]},{"dataType":"enum","enums":["select"]},{"dataType":"enum","enums":["file"]},{"dataType":"enum","enums":["button"]},{"dataType":"enum","enums":["radiogroup"]}],"required":true},
+            "helperText": {"dataType":"string"},
+            "Variant": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["outline"]},{"dataType":"enum","enums":["standarrd"]},{"dataType":"enum","enums":["contained"]}]},
+            "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"required":true},
+            "fullWidth": {"dataType":"boolean","required":true},
+            "validation": {"dataType":"any","required":true},
+            "onClick": {"dataType":"string","required":true},
+        },
+        "additionalProperties": {"dataType":"any"},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "StandardForm": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "url": {"dataType":"string","required":true},
+            "inputs": {"dataType":"array","array":{"dataType":"refObject","ref":"Input"},"required":true},
+            "btnTxt": {"dataType":"string","required":true},
+            "noSubmit": {"dataType":"boolean","required":true},
+            "onSubmitSuccess": {"dataType":"string","required":true},
+            "onSubmitFailure": {"dataType":"string","required":true},
+            "beforeSubmit": {"dataType":"string","required":true},
+            "clearForm": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreate": {
+        "dataType": "refObject",
+        "properties": {
+            "form": {"ref":"StandardForm","required":true},
+            "activationDate": {"dataType":"string","required":true},
+            "expiryDate": {"dataType":"string"},
+            "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
+            "webHooks": {"dataType":"array","array":{"dataType":"string"}},
+            "collectionGroup": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IUpdate": {
+        "dataType": "refObject",
+        "properties": {
+            "form": {"ref":"StandardForm","required":true},
+            "activationDate": {"dataType":"string","required":true},
+            "expiryDate": {"dataType":"string"},
+            "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
+            "webHooks": {"dataType":"array","array":{"dataType":"string"}},
+            "collectionGroup": {"dataType":"string"},
+            "formId": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IDelete": {
+        "dataType": "refObject",
+        "properties": {
+            "formId": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ISignup": {
         "dataType": "refObject",
         "properties": {
@@ -79,6 +148,140 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
+        app.post('/form/create',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.create)),
+
+            function formController_create(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"ICreate"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.create.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/form/update',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.update)),
+
+            function formController_update(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"IUpdate"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.update.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/form/:id',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.delete)),
+
+            function formController_delete(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"IDelete"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.delete.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/form/:id',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.get)),
+
+            function formController_get(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    id: {"in":"query","name":"id","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.get.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/form',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.getAll)),
+
+            function formController_getAll(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.getAll.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/user/signup',
             ...(fetchMiddlewares<RequestHandler>(userController)),
             ...(fetchMiddlewares<RequestHandler>(userController.prototype.signup)),

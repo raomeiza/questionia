@@ -6,6 +6,216 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"Input": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"email",
+							"password",
+							"text",
+							"mobile",
+							"date",
+							"time",
+							"datetime",
+							"radio",
+							"select",
+							"file",
+							"button",
+							"radiogroup"
+						]
+					},
+					"helperText": {
+						"type": "string"
+					},
+					"Variant": {
+						"type": "string",
+						"enum": [
+							"outline",
+							"standarrd",
+							"contained"
+						]
+					},
+					"sx": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					},
+					"fullWidth": {
+						"type": "boolean"
+					},
+					"validation": {},
+					"onClick": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"label",
+					"type",
+					"sx",
+					"fullWidth",
+					"validation",
+					"onClick"
+				],
+				"type": "object",
+				"additionalProperties": {}
+			},
+			"StandardForm": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					},
+					"inputs": {
+						"items": {
+							"$ref": "#/components/schemas/Input"
+						},
+						"type": "array"
+					},
+					"btnTxt": {
+						"type": "string"
+					},
+					"noSubmit": {
+						"type": "boolean"
+					},
+					"onSubmitSuccess": {
+						"type": "string"
+					},
+					"onSubmitFailure": {
+						"type": "string"
+					},
+					"beforeSubmit": {
+						"type": "string"
+					},
+					"clearForm": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"url",
+					"inputs",
+					"btnTxt",
+					"noSubmit",
+					"onSubmitSuccess",
+					"onSubmitFailure",
+					"beforeSubmit",
+					"clearForm"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreate": {
+				"properties": {
+					"form": {
+						"$ref": "#/components/schemas/StandardForm"
+					},
+					"activationDate": {
+						"type": "string"
+					},
+					"expiryDate": {
+						"type": "string"
+					},
+					"social": {
+						"properties": {
+							"telegram": {
+								"type": "boolean"
+							},
+							"whatsapp": {
+								"type": "boolean"
+							}
+						},
+						"required": [
+							"telegram",
+							"whatsapp"
+						],
+						"type": "object"
+					},
+					"webHooks": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"collectionGroup": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"form",
+					"activationDate"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUpdate": {
+				"properties": {
+					"form": {
+						"$ref": "#/components/schemas/StandardForm"
+					},
+					"activationDate": {
+						"type": "string"
+					},
+					"expiryDate": {
+						"type": "string"
+					},
+					"social": {
+						"properties": {
+							"telegram": {
+								"type": "boolean"
+							},
+							"whatsapp": {
+								"type": "boolean"
+							}
+						},
+						"required": [
+							"telegram",
+							"whatsapp"
+						],
+						"type": "object"
+					},
+					"webHooks": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"collectionGroup": {
+						"type": "string"
+					},
+					"formId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"form",
+					"activationDate",
+					"formId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IDelete": {
+				"properties": {
+					"formId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"formId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ISignup": {
 				"properties": {
 					"email": {
@@ -139,6 +349,438 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
+		"/form/create": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to create form"
+					}
+				},
+				"tags": [
+					"Forms"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreate"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/form/update": {
+			"post": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to update form"
+					}
+				},
+				"tags": [
+					"Forms"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUpdate"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/form/{id}": {
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to delete form"
+					}
+				},
+				"tags": [
+					"Forms"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IDelete"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to create form"
+					}
+				},
+				"tags": [
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/form": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to fetch forms"
+					}
+				},
+				"tags": [
+					"Forms"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/user/signup": {
 			"post": {
 				"operationId": "Signup",
