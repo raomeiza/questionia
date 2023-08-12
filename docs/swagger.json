@@ -28,7 +28,11 @@
 							"select",
 							"file",
 							"button",
-							"radiogroup"
+							"radiogroup",
+							"autocomplete",
+							"emailOrMobile",
+							"checkbox",
+							"textarea"
 						]
 					},
 					"helperText": {
@@ -58,18 +62,14 @@
 				"required": [
 					"name",
 					"label",
-					"type",
-					"sx",
-					"fullWidth",
-					"validation",
-					"onClick"
+					"type"
 				],
 				"type": "object",
 				"additionalProperties": {}
 			},
 			"StandardForm": {
 				"properties": {
-					"name": {
+					"title": {
 						"type": "string"
 					},
 					"url": {
@@ -101,15 +101,7 @@
 					}
 				},
 				"required": [
-					"name",
-					"url",
-					"inputs",
-					"btnTxt",
-					"noSubmit",
-					"onSubmitSuccess",
-					"onSubmitFailure",
-					"beforeSubmit",
-					"clearForm"
+					"inputs"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -148,11 +140,14 @@
 					},
 					"collectionGroup": {
 						"type": "string"
+					},
+					"userId": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"form",
-					"activationDate"
+					"userId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -192,13 +187,16 @@
 					"collectionGroup": {
 						"type": "string"
 					},
+					"userId": {
+						"type": "string"
+					},
 					"formId": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"form",
-					"activationDate",
+					"userId",
 					"formId"
 				],
 				"type": "object",

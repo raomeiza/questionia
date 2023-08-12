@@ -1,43 +1,45 @@
 export interface Input {
   name: string;
   label: string;
-  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup';
+  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup' | 'autocomplete' | 'emailOrMobile' | 'checkbox' | 'textarea';
   helperText?: string;
   // setHelperText?: string;
   // formError?: boolean;
   // setFormError?: boolean
   // setFormInputValueOrError?: string
   Variant?: 'outline' | 'standarrd' | 'contained';
-  sx: {[x: string]: any};
-  fullWidth: boolean
-  validation: any
-  onClick: string;
+  sx?: { [x: string]: any };
+  fullWidth?: boolean
+  validation?: any
+  onClick?: string;
   // localOnChange: string;
-  [x:string] : any; 
+  [x: string]: any;
 }
 
 export interface StandardForm {
-  name: string;
-  url: string;
+  title?: string;
+  url?: string;
   inputs: Input[];
-  btnTxt: string;
-  noSubmit: boolean;
-  onSubmitSuccess: string;
-  onSubmitFailure: string;
-  beforeSubmit: string;
-  clearForm: string
+  btnTxt?: string;
+  noSubmit?: boolean;
+  onSubmitSuccess?: string;
+  onSubmitFailure?: string;
+  beforeSubmit?: string;
+  clearForm?: string
+
 }
 
 export interface ICreate {
   form: StandardForm,
-  activationDate: string,
+  activationDate?: string,
   expiryDate?: string,
   social?: {
     whatsapp: boolean
     telegram: boolean
   },
   webHooks?: string[]
-  collectionGroup?: string
+  collectionGroup?: string,
+  userId: string
 }
 
 export interface IUpdate extends ICreate {
@@ -48,7 +50,7 @@ export interface IUpdate extends ICreate {
 export interface IGet {
   formId: string;
 }
-export interface IGetAll {}
+export interface IGetAll { }
 
 export interface IDelete {
   formId: string
