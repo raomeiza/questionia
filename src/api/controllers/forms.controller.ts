@@ -1,8 +1,8 @@
 import { handleErrorResponse, handleSuccessResponse } from '../utils/response-handler'
 import formsServices from '../services/forms.services'
-import * as validations from '../validations/user.validation'
+// import * as validations from '../validations/fom.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
-import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path } from 'tsoa'
+import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch } from 'tsoa'
 import IFormService, { ICreate, IDelete, IGet, IGetAll, IUpdate } from '../interfaces/forms.interface'
 import { signToken } from '../utils/tokenizer'
 
@@ -18,16 +18,22 @@ export class formController extends Controller {
   @Response(409, 'Failed to create form')
   public async create(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
-    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
-    @Body() payload: ICreate
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string }>,
+    @Body() payload: ICreate,
+    @Request() request: any
   ): Promise<any> {
     try {
-      //await validations.signup.validateAsync(payload)
-      // create the user
-      const user = await formsServices.create(payload)
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      let token = request.headers['x-auth-token']
+      // authenticate the user
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized' })
+      }
+      // await validations.
+      const form = await formsServices.create({ ...payload, userId: request.decodedUser.userId })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       // send the user a verification email
-      sendSuccess(201, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
+      sendSuccess(201, { success: true, data: form }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -36,13 +42,13 @@ export class formController extends Controller {
   /**
  * @description - updates an existing form
  * */
-  @Post('update')
+  @Patch(':id')
   @Response(201, 'Form updated successfully')
   // email already in use
   @Response(409, 'Failed to update form')
   public async update(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
-    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string,  }>,
     @Body() payload: IUpdate
   ): Promise<any> {
     try {

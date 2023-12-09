@@ -32,7 +32,15 @@
 							"autocomplete",
 							"emailOrMobile",
 							"checkbox",
-							"textarea"
+							"textarea",
+							"number",
+							"switch",
+							"slider",
+							"rating",
+							"color",
+							"submit",
+							"reset",
+							"buttonGroup"
 						]
 					},
 					"helperText": {
@@ -42,8 +50,9 @@
 						"type": "string",
 						"enum": [
 							"outline",
-							"standarrd",
-							"contained"
+							"standard",
+							"contained",
+							"text"
 						]
 					},
 					"sx": {
@@ -111,6 +120,14 @@
 					"form": {
 						"$ref": "#/components/schemas/StandardForm"
 					},
+					"header": {
+						"type": "string"
+					},
+					"sx": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					},
 					"activationDate": {
 						"type": "string"
 					},
@@ -147,6 +164,7 @@
 				},
 				"required": [
 					"form",
+					"header",
 					"userId"
 				],
 				"type": "object",
@@ -156,6 +174,14 @@
 				"properties": {
 					"form": {
 						"$ref": "#/components/schemas/StandardForm"
+					},
+					"header": {
+						"type": "string"
+					},
+					"sx": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
 					},
 					"activationDate": {
 						"type": "string"
@@ -196,6 +222,7 @@
 				},
 				"required": [
 					"form",
+					"header",
 					"userId",
 					"formId"
 				],
@@ -390,8 +417,38 @@
 								"schema": {
 									"properties": {
 										"message": {
-											"additionalProperties": false,
-											"type": "object"
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
 										},
 										"status": {
 											"type": "number",
@@ -417,6 +474,37 @@
 					},
 					"409": {
 						"description": "Failed to create form"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -436,8 +524,8 @@
 				}
 			}
 		},
-		"/form/update": {
-			"post": {
+		"/form/{id}": {
+			"patch": {
 				"operationId": "Update",
 				"responses": {
 					"200": {
@@ -479,8 +567,38 @@
 								"schema": {
 									"properties": {
 										"message": {
-											"additionalProperties": false,
-											"type": "object"
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
 										},
 										"status": {
 											"type": "number",
@@ -506,6 +624,37 @@
 					},
 					"409": {
 						"description": "Failed to update form"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -523,9 +672,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/form/{id}": {
+			},
 			"delete": {
 				"operationId": "Delete",
 				"responses": {

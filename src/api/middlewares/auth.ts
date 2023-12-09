@@ -19,7 +19,6 @@ async function decodeTokenMiddleware(req: any): Promise<void> {
         req.decodedUser = await verifyToken(token);
         return;
       } catch (err: any) {
-        console.log('err', err);
         throw new JsonWebTokenError2('Invalid token', 401);
       }
     } else {

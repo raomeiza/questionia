@@ -36,7 +36,7 @@ export class userController extends Controller {
       const hashedPassword = await password.hashPassword(payload.password)
       // create the user
       const user = await userService.signup({ ...payload, password: hashedPassword })
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
       // send the user a verification email
       sendSuccess(201, { success: true, data: user } , /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
@@ -65,7 +65,7 @@ export class userController extends Controller {
       await validations.verifyToken.validateAsync(payload)
       // verify the token
       const user = await userService.verifyToken({...payload, tokenRoute: 'email'})
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const jwt = await signToken({ userId: user.userId, email: user.email, is_admin: user.is_admin || false })
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -99,7 +99,7 @@ export class userController extends Controller {
       await validations.profile.validateAsync(payload)
       // verify the token
       const user = await userService.createProfile(payload)
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -153,7 +153,7 @@ export class userController extends Controller {
       await validations.login.validateAsync(payload)
       // verify the token
       const user = await userService.login(payload)
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -220,7 +220,7 @@ export class userController extends Controller {
       await validations.isMongoIdValid(payload.userId)
       // verify the token
       const user = await userService.delete(payload)
-      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
         sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)

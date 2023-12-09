@@ -17,9 +17,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "name": {"dataType":"string","required":true},
             "label": {"dataType":"string","required":true},
-            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["email"]},{"dataType":"enum","enums":["password"]},{"dataType":"enum","enums":["text"]},{"dataType":"enum","enums":["mobile"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["time"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["datetime"]},{"dataType":"enum","enums":["radio"]},{"dataType":"enum","enums":["select"]},{"dataType":"enum","enums":["file"]},{"dataType":"enum","enums":["button"]},{"dataType":"enum","enums":["radiogroup"]},{"dataType":"enum","enums":["autocomplete"]},{"dataType":"enum","enums":["emailOrMobile"]},{"dataType":"enum","enums":["checkbox"]},{"dataType":"enum","enums":["textarea"]}],"required":true},
+            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["email"]},{"dataType":"enum","enums":["password"]},{"dataType":"enum","enums":["text"]},{"dataType":"enum","enums":["mobile"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["time"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["datetime"]},{"dataType":"enum","enums":["radio"]},{"dataType":"enum","enums":["select"]},{"dataType":"enum","enums":["file"]},{"dataType":"enum","enums":["button"]},{"dataType":"enum","enums":["radiogroup"]},{"dataType":"enum","enums":["autocomplete"]},{"dataType":"enum","enums":["emailOrMobile"]},{"dataType":"enum","enums":["checkbox"]},{"dataType":"enum","enums":["textarea"]},{"dataType":"enum","enums":["number"]},{"dataType":"enum","enums":["switch"]},{"dataType":"enum","enums":["slider"]},{"dataType":"enum","enums":["rating"]},{"dataType":"enum","enums":["color"]},{"dataType":"enum","enums":["submit"]},{"dataType":"enum","enums":["reset"]},{"dataType":"enum","enums":["buttonGroup"]}],"required":true},
             "helperText": {"dataType":"string"},
-            "Variant": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["outline"]},{"dataType":"enum","enums":["standarrd"]},{"dataType":"enum","enums":["contained"]}]},
+            "Variant": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["outline"]},{"dataType":"enum","enums":["standard"]},{"dataType":"enum","enums":["contained"]},{"dataType":"enum","enums":["text"]}]},
             "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "fullWidth": {"dataType":"boolean"},
             "validation": {"dataType":"any"},
@@ -48,6 +48,8 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "form": {"ref":"StandardForm","required":true},
+            "header": {"dataType":"string","required":true},
+            "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "activationDate": {"dataType":"string"},
             "expiryDate": {"dataType":"string"},
             "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
@@ -62,6 +64,8 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "form": {"ref":"StandardForm","required":true},
+            "header": {"dataType":"string","required":true},
+            "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "activationDate": {"dataType":"string"},
             "expiryDate": {"dataType":"string"},
             "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
@@ -157,8 +161,9 @@ export function RegisterRoutes(app: express.Router) {
             function formController_create(request: any, response: any, next: any) {
             const args = {
                     sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
-                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     payload: {"in":"body","name":"payload","required":true,"ref":"ICreate"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -177,14 +182,14 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/form/update',
+        app.patch('/form/:id',
             ...(fetchMiddlewares<RequestHandler>(formController)),
             ...(fetchMiddlewares<RequestHandler>(formController.prototype.update)),
 
             function formController_update(request: any, response: any, next: any) {
             const args = {
                     sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
-                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     payload: {"in":"body","name":"payload","required":true,"ref":"IUpdate"},
             };
 

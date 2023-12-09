@@ -1,13 +1,13 @@
 export interface Input {
   name: string;
   label: string;
-  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup' | 'autocomplete' | 'emailOrMobile' | 'checkbox' | 'textarea';
+  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup' | 'autocomplete' | 'emailOrMobile' | 'checkbox' | 'textarea' | 'number' | 'switch' | 'slider' | 'rating' | 'color' | 'submit' | 'reset' | 'buttonGroup' //'button' | 'link' | 'heading' | 'paragraph' | 'html' | 'content' | 'columns' | 'table' | 'signature' | 'captcha' | 'paypal' | 'stripe' | 'divider' | 'spacer' | 'button' | 'columns' | 'section' | 'page' | 'header' | 'footer' | 'embed' | 'map' | 'gmap' | 'address' | 'recaptcha' | 'quiz' | 'quizscore' | 'quiztimer' | 'quizleaderboard' | 'quizcertificate' | 'quizsurvey' | 'quizpoll' | 'quiztally' 
   helperText?: string;
   // setHelperText?: string;
   // formError?: boolean;
   // setFormError?: boolean
   // setFormInputValueOrError?: string
-  Variant?: 'outline' | 'standarrd' | 'contained';
+  Variant?: 'outline' | 'standard' | 'contained' | 'text';
   sx?: { [x: string]: any };
   fullWidth?: boolean
   validation?: any
@@ -31,6 +31,8 @@ export interface StandardForm {
 
 export interface ICreate {
   form: StandardForm,
+  header: string,
+  sx?: { [x: string]: any },
   activationDate?: string,
   expiryDate?: string,
   social?: {
