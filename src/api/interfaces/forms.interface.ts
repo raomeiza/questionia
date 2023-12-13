@@ -55,6 +55,11 @@ export interface IGet {
   formId: string;
 }
 
+export interface IFillForm extends IGet {
+  data: object
+  fillId?: string
+}
+
 export interface IGetAll { }
 
 export interface IDelete {
@@ -65,9 +70,11 @@ export interface IDelete {
 
 export default interface IFormService {
   model: typeof Form;
+  fillFormModel: typeof FillFormModel;
   create(resource: ICreate): Promise<any>;
   delete(resource: IDelete): Promise<any>;
   Update(resource: IUpdate): Promise<any>;
   get(resource: IGet): Promise<any>;
   getAll(resource: IGetAll): Promise<any>;
+  fillForm(resource: IFillForm): Promise<any>;
 }

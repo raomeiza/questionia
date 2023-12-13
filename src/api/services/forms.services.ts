@@ -1,13 +1,15 @@
-import Forms from '../models/forms.model'
+import Forms, { FillFormModel } from '../models/forms.model'
 import { signToken } from '../utils/tokenizer'
-import  IFormService, {IGet, ICreate, IDelete, IGetAll, IUpdate } from '../interfaces/forms.interface'
+import  IFormService, {IGet, ICreate, IDelete, IGetAll, IUpdate, IFillForm } from '../interfaces/forms.interface'
 import { Model, Mongoose } from 'mongoose'
 
 export class FormService implements IFormService {
   constructor() {
     this.model = Forms
+    this.fillFormModel = FillFormModel
   }
   model: typeof Forms
+  fillFormModel: typeof FillFormModel
   async create(resource: ICreate): Promise<any> {
     try {      
       const form = await this.model.create(resource)
@@ -59,6 +61,26 @@ export class FormService implements IFormService {
     }
   }
 
+  async fillForm(resource: IFillForm): Promise<any> {
+    try {
+      //verify if the form exists and if it is active by feching only necessary fields
+      // const form = await this.model.findById(resource.formId).select('isActive isPublic');
+      // if (form) {
+      //   if (form.isActive && form.isPublic) {
+      //     return form;
+      //   } else {
+      //     throw({message: 'form is not active', status: 400})
+      //   }
+      // } else {
+      //   throw({message: 'form not found', status: 404})
+      // }
+      let filled = this.fillFormModel.create({formId: resource.formId, data: resource.data})
+      //@ts-ignore
+      return filled;
+    } catch (err: any) {
+      throw ({ message: err.message || 'Failed to fetch forms', error: err, status: err.status || err.errorStatus || 404 })
+    }
+  }
 
 };
 

@@ -46,4 +46,13 @@ const Form = model('Form', new Schema({
 
 }), 'form');
 
+export const FillFormModel = model('FillForm', new Schema({
+  formId: { type: mongoose.Types.ObjectId, required: true },
+  data: { type: Object, required: true },
+  fillId: { type: String, required: false },
+  userId: { type: mongoose.Types.ObjectId, required: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+}), 'fillForm');
+
 export default Form;

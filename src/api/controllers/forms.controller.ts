@@ -154,6 +154,35 @@ export class formController extends Controller {
       return await handleErrorResponse(sendError, err)
     }
   }
+
+  // routes for filling of forms
+  @Tags('Forms', 'Fill')
+  @Post('/fill/:formId')
+  @Response(201, 'Form filled successfully')
+  @Response(409, 'Failed to fill form')
+  public async fill(
+    @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Body() payload: IFillForm,
+    @Path('formId') formId: string,
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      //await validations.signup.validateAsync(payload)
+      // await decodeTokenMiddleware(request)
+      // if (!request.decodedUser.userId) {
+      //   console.log('no user id', request.decodedUser)
+      //   return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      // }
+      // await validations.
+      const form = await formsServices.fillForm(payload)
+      // const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(201, { success: true, data: form }, /* set the jwt  { 'x-auth-token': jwt }*/)
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
 }
 
 //export the controller
