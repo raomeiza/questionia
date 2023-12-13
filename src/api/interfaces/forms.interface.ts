@@ -1,3 +1,5 @@
+import Form, { FillFormModel } from "../models/forms.model";
+
 export interface Input {
   name: string;
   label: string;
@@ -52,6 +54,7 @@ export interface IUpdate extends ICreate {
 export interface IGet {
   formId: string;
 }
+
 export interface IGetAll { }
 
 export interface IDelete {
@@ -61,7 +64,7 @@ export interface IDelete {
 
 
 export default interface IFormService {
-  model: any;
+  model: typeof Form;
   create(resource: ICreate): Promise<any>;
   delete(resource: IDelete): Promise<any>;
   Update(resource: IUpdate): Promise<any>;

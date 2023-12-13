@@ -241,6 +241,26 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IFillForm": {
+				"properties": {
+					"formId": {
+						"type": "string"
+					},
+					"data": {
+						"additionalProperties": false,
+						"type": "object"
+					},
+					"fillId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"formId",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ISignup": {
 				"properties": {
 					"email": {
@@ -416,6 +436,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -432,6 +456,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -447,6 +472,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -463,6 +492,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -481,6 +511,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -497,6 +531,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -529,14 +564,6 @@
 				"operationId": "Update",
 				"responses": {
 					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					},
-					"201": {
 						"description": "",
 						"content": {
 							"application/json": {
@@ -560,12 +587,19 @@
 							}
 						}
 					},
+					"201": {
+						"description": "Form updated successfully"
+					},
 					"400": {
 						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -582,6 +616,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -597,6 +632,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -613,6 +652,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -631,6 +671,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
 										"message": {
 											"type": "string"
 										},
@@ -647,6 +691,7 @@
 										}
 									},
 									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -677,14 +722,6 @@
 				"operationId": "Delete",
 				"responses": {
 					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					},
-					"201": {
 						"description": "",
 						"content": {
 							"application/json": {
@@ -708,15 +745,21 @@
 							}
 						}
 					},
+					"201": {
+						"description": "Form deleted successfully"
+					},
 					"400": {
 						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
 									"properties": {
-										"message": {
+										"error": {
 											"additionalProperties": false,
 											"type": "object"
+										},
+										"message": {
+											"type": "string"
 										},
 										"status": {
 											"type": "number",
@@ -731,6 +774,43 @@
 										}
 									},
 									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -764,14 +844,6 @@
 				"operationId": "Get",
 				"responses": {
 					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					},
-					"201": {
 						"description": "",
 						"content": {
 							"application/json": {
@@ -801,9 +873,12 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"message": {
+										"error": {
 											"additionalProperties": false,
 											"type": "object"
+										},
+										"message": {
+											"type": "string"
 										},
 										"status": {
 											"type": "number",
@@ -818,6 +893,43 @@
 										}
 									},
 									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -828,7 +940,43 @@
 						}
 					},
 					"409": {
-						"description": "Failed to create form"
+						"description": "Failed to load form"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -837,7 +985,7 @@
 				"security": [],
 				"parameters": [
 					{
-						"in": "query",
+						"in": "path",
 						"name": "id",
 						"required": true,
 						"schema": {
@@ -924,6 +1072,182 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/form/fill/{formId}": {
+			"post": {
+				"operationId": "Fill",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to fill form"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Fill",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IFillForm"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/user/signup": {

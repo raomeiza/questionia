@@ -11,9 +11,8 @@ export class FormService implements IFormService {
   async create(resource: ICreate): Promise<any> {
     try {      
       const form = await this.model.create(resource)
-      return await form;
+      return form;
     } catch (err: any) {
-      console.log(err)
       throw ({ message: err.message || 'Form not created', error: err, status: err.status || err.errorStatus || 404 })
     }
   }
@@ -22,14 +21,13 @@ export class FormService implements IFormService {
     try {      
       const form = await this.model.findByIdAndUpdate(resource.formId, resource)
       //@ts-ignore
-      return await getResponse(form);
+      return form;
     } catch (err: any) {
       throw ({ message: err.message || 'Form not update', error: err, status: err.status || err.errorStatus || 404 })
     }
   }
 
   async get(resource: IGet): Promise<any> {
-    console.log(resource)
     try {      
       const form = await this.model.findById(resource.formId)
       if (form) {
@@ -46,7 +44,7 @@ export class FormService implements IFormService {
     try {      
       const form = await this.model.findByIdAndDelete(resource.formId);
       //@ts-ignore
-      return await getResponse(form);
+      return form;
     } catch (err: any) {
       throw ({ message: err.message || 'Failed to delete', error: err, status: err.status || err.errorStatus || 404 })
     }
@@ -54,13 +52,13 @@ export class FormService implements IFormService {
 
   async getAll(): Promise<any> {
     try {      
-      const form = await this.model.find();
+      return await this.model.find();
       //@ts-ignore
-      return await getResponse(form);
     } catch (err: any) {
       throw ({ message: err.message || 'Failed to fetch forms', error: err, status: err.status || err.errorStatus || 404 })
     }
   }
+
 
 };
 
