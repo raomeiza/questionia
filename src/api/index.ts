@@ -12,6 +12,7 @@ import basicAuth from 'express-basic-auth';
 import bodyParser from 'body-parser';
 import logger from './utils/logger';
 import expressErrorHandlerMiddleware from './middlewares/express.error';
+import { refreshToken } from './utils/tokenizer';
 const swaggerDocument = require('../../docs/swagger.json');
 
 console.log(BASE_URL)
@@ -87,6 +88,26 @@ app.use('/', (req, res, next) => {
     res.removeHeader('Cache-Control');
   }
 })
+
+// create a post route handler for revalidating token
+//this is not exposed in the api docs for security reasons
+// and is mainly implemented for nextjs users whose session expires in about a day
+// so that the can periodically revalidate their token as far as they are sure the user is still logged in
+app.post('/revalidate', async (req, res) => {
+  const token = req.headers['x-auth-token'];
+  if (!token) {
+    return res.status(401).json({
+      message: 'No token provided',
+      status: 401,
+    });
+  }
+  const newToken = await refreshToken(token);
+  res.set('x-auth-token', newToken);
+  res.status(200).json({
+    message: 'Token revalidated',
+    status: 200,
+  });
+});
 
 if (NODE_ENV === 'DEVELOPMENT') {
   app.use(morgan('dev'));
