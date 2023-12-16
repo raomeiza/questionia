@@ -3,7 +3,7 @@ import Form, { FillFormModel } from "../models/forms.model";
 export interface Input {
   name: string;
   label: string;
-  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup' | 'autocomplete' | 'emailOrMobile' | 'checkbox' | 'textarea' | 'number' | 'switch' | 'slider' | 'rating' | 'color' | 'submit' | 'reset' | 'buttonGroup' //'button' | 'link' | 'heading' | 'paragraph' | 'html' | 'content' | 'columns' | 'table' | 'signature' | 'captcha' | 'paypal' | 'stripe' | 'divider' | 'spacer' | 'button' | 'columns' | 'section' | 'page' | 'header' | 'footer' | 'embed' | 'map' | 'gmap' | 'address' | 'recaptcha' | 'quiz' | 'quizscore' | 'quiztimer' | 'quizleaderboard' | 'quizcertificate' | 'quizsurvey' | 'quizpoll' | 'quiztally' 
+  type: 'email' | 'password' | 'text' | 'mobile' | 'date' | 'time' | 'date' | 'datetime' | 'radio' | 'select' | 'file' | 'button' | 'radiogroup' | 'autocomplete' | 'emailOrMobile' | 'checkbox' | 'textarea' | 'number' | 'switch' | 'slider' | 'rating' | 'color' | 'submit' | 'reset' | 'buttonGroup' | 'signature' | 'dropzone' //'button' | 'link' | 'heading' | 'paragraph' | 'html' | 'content' | 'columns' | 'table' | 'signature' | 'captcha' | 'paypal' | 'stripe' | 'divider' | 'spacer' | 'button' | 'columns' | 'section' | 'page' | 'header' | 'footer' | 'embed' | 'map' | 'gmap' | 'address' | 'recaptcha' | 'quiz' | 'quizscore' | 'quiztimer' | 'quizleaderboard' | 'quizcertificate' | 'quizsurvey' | 'quizpoll' | 'quiztally' 
   helperText?: string;
   // setHelperText?: string;
   // formError?: boolean;

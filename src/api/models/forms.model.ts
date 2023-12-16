@@ -13,7 +13,7 @@ const Form = model('Form', new Schema({
       label: { type: String, required: true, maxlength:150 },
       type: { type: String,
         required: true,
-        enum: ['text', 'email', 'button', 'mobile', 'date', 'datetime', 'time', 'select', 'radio', 'checkbox','emailOrMobile', 'password', 'emailormobile', 'file', 'autocomplete', 'textarea', 'number', 'switch', 'slider', 'rating', 'color', 'submit', 'reset', 'buttonGroup' ]
+        enum: ['text', 'email', 'button', 'mobile', 'date', 'datetime', 'time', 'select', 'radio', 'checkbox','emailOrMobile', 'password', 'emailormobile', 'file', 'autocomplete', 'textarea', 'number', 'switch', 'slider', 'rating', 'color', 'submit', 'reset', 'buttonGroup', 'signature', 'dropzone' ]
       },
       helperText: { type: String, maxlength: 300, required: false },
       variant: { type: String, enum: ['outlined', 'standard', 'contained', 'text', 'filled'], default: 'outlined', required: false },

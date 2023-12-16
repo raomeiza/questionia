@@ -40,7 +40,9 @@
 							"color",
 							"submit",
 							"reset",
-							"buttonGroup"
+							"buttonGroup",
+							"signature",
+							"dropzone"
 						]
 					},
 					"helperText": {
