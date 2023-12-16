@@ -41,7 +41,9 @@ const Form = model('Form', new Schema({
     whatsapp: Boolean,
     telegram: Boolean
   },
-
+  activationDate:{type: Date, default: new Date().toISOString()},
+  deactivatioDate:{type: Date},
+  deactivationReason:{type:String},
   userId:{type: mongoose.Types.ObjectId, required: true}
 
 }), 'form');
