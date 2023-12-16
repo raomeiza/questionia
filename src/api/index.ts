@@ -14,6 +14,7 @@ import logger from './utils/logger';
 import expressErrorHandlerMiddleware from './middlewares/express.error';
 import { refreshToken } from './utils/tokenizer';
 const swaggerDocument = require('../../docs/swagger.json');
+import paystack from './paystack/index';
 
 console.log(BASE_URL)
 // Instance of express
@@ -39,6 +40,7 @@ app.get('/ping', (req, res) => {
 }
 );
 
+app.use('/paystack', paystack);
 app.use(cors({
   credentials: true, methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', preflightContinue: false, origin: '*',
 }));
@@ -105,6 +107,15 @@ app.post('/revalidate', async (req, res) => {
   res.set('x-auth-token', newToken);
   res.status(200).json({
     message: 'Token revalidated',
+    status: 200,
+  });
+});
+
+// paystack webhook
+app.post('/paystack/webhook', async (req, res) => {
+  console.log(req.body)
+  res.status(200).json({
+    message: 'success',
     status: 200,
   });
 });
