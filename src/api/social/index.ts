@@ -156,7 +156,6 @@ const handleResponse = async (ctx: any, type: string) => {
     }
 
   const chatSession = chat.get(chatId)
-  console.log(chatSession)
   if(!chatSession) {
     const formId = ctx.data
     if(formId){
