@@ -4,3 +4,6 @@ dist
 docs
 public
 .env
+# all sql files
+*.sql
+faked.js

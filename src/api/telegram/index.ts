@@ -2,10 +2,10 @@ import { Router } from "express";
 import  telegramInstance  from '../social'
 
 const router = Router();
-telegramInstance.on("message", (msg: { chat: { id: any; }; }) => {
-  const chatId = msg.chat.id;
-  telegramInstance.sendMessage(chatId, "Received your message");
-});
+// telegramInstance.on("message", (msg: { chat: { id: any; }; }) => {
+//   const chatId = msg.chat.id;
+//   telegramInstance.sendMessage(chatId, "Received your message");
+// });
 
 telegramInstance.on("polling_error", (error: any) => {
   console.log(error);
