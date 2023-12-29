@@ -1,4 +1,4 @@
-import Form, { FillFormModel } from "../models/forms.model";
+import Form, { ResponseModel } from "../models/forms.model";
 
 export interface Input {
   name: string;
@@ -43,11 +43,8 @@ export interface ICreate {
   },
   webHooks?: string[]
   collectionGroup?: string,
-  userId: string
-}
-
-export interface IUpdate extends ICreate {
-  formId: string
+  userId: string,
+  type?: 'form' | 'survey' | 'quiz' | 'questionniar'
 }
 
 
@@ -55,12 +52,13 @@ export interface IGet {
   formId: string;
 }
 
-export interface IFillForm extends IGet {
+export interface IResponse extends IGet {
   data: object
+  channel: 'whatsapp' | 'telegram' | 'web'
   fillId?: string
 }
 
-export interface IGetAll { }
+export interface IGetAll { userId: string, page?: number, pageSize?: number, skip?: number }
 
 export interface IDelete {
   formId: string
@@ -70,11 +68,11 @@ export interface IDelete {
 
 export default interface IFormService {
   model: typeof Form;
-  fillFormModel: typeof FillFormModel;
+  responseModel: typeof ResponseModel;
   create(resource: ICreate): Promise<any>;
   delete(resource: IDelete): Promise<any>;
-  Update(resource: IUpdate): Promise<any>;
+  Update(resource: ICreate, formId: string, userId: string): Promise<any>;
   get(resource: IGet): Promise<any>;
   getAll(resource: IGetAll): Promise<any>;
-  fillForm(resource: IFillForm): Promise<any>;
+  fillForm(resource: IResponse): Promise<any>;
 }

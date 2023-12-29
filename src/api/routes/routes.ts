@@ -56,23 +56,7 @@ const models: TsoaRoute.Models = {
             "webHooks": {"dataType":"array","array":{"dataType":"string"}},
             "collectionGroup": {"dataType":"string"},
             "userId": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IUpdate": {
-        "dataType": "refObject",
-        "properties": {
-            "form": {"ref":"StandardForm","required":true},
-            "header": {"dataType":"string","required":true},
-            "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
-            "activationDate": {"dataType":"string"},
-            "expiryDate": {"dataType":"string"},
-            "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
-            "webHooks": {"dataType":"array","array":{"dataType":"string"}},
-            "collectionGroup": {"dataType":"string"},
-            "userId": {"dataType":"string","required":true},
-            "formId": {"dataType":"string","required":true},
+            "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["form"]},{"dataType":"enum","enums":["survey"]},{"dataType":"enum","enums":["quiz"]},{"dataType":"enum","enums":["questionniar"]}]},
         },
         "additionalProperties": false,
     },
@@ -85,11 +69,12 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IFillForm": {
+    "IResponse": {
         "dataType": "refObject",
         "properties": {
             "formId": {"dataType":"string","required":true},
             "data": {"dataType":"object","required":true},
+            "channel": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]},{"dataType":"enum","enums":["web"]}],"required":true},
             "fillId": {"dataType":"string"},
         },
         "additionalProperties": false,
@@ -200,7 +185,7 @@ export function RegisterRoutes(app: express.Router) {
             const args = {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
-                    payload: {"in":"body","name":"payload","required":true,"ref":"IUpdate"},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"ICreate"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
@@ -283,7 +268,8 @@ export function RegisterRoutes(app: express.Router) {
             function formController_getAll(request: any, response: any, next: any) {
             const args = {
                     sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
-                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    sendError: {"in":"res","name":"401","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -302,15 +288,15 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/form/fill/:formId',
+        app.post('/form/response/:formId',
             ...(fetchMiddlewares<RequestHandler>(formController)),
-            ...(fetchMiddlewares<RequestHandler>(formController.prototype.fill)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.response)),
 
-            function formController_fill(request: any, response: any, next: any) {
+            function formController_response(request: any, response: any, next: any) {
             const args = {
                     sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
-                    payload: {"in":"body","name":"payload","required":true,"ref":"IFillForm"},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"IResponse"},
                     formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
@@ -324,7 +310,7 @@ export function RegisterRoutes(app: express.Router) {
                 const controller = new formController();
 
 
-              const promise = controller.fill.apply(controller, validatedArgs as any);
+              const promise = controller.response.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

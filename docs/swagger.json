@@ -162,71 +162,21 @@
 					},
 					"userId": {
 						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"form",
+							"survey",
+							"quiz",
+							"questionniar"
+						]
 					}
 				},
 				"required": [
 					"form",
 					"header",
 					"userId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"IUpdate": {
-				"properties": {
-					"form": {
-						"$ref": "#/components/schemas/StandardForm"
-					},
-					"header": {
-						"type": "string"
-					},
-					"sx": {
-						"properties": {},
-						"additionalProperties": {},
-						"type": "object"
-					},
-					"activationDate": {
-						"type": "string"
-					},
-					"expiryDate": {
-						"type": "string"
-					},
-					"social": {
-						"properties": {
-							"telegram": {
-								"type": "boolean"
-							},
-							"whatsapp": {
-								"type": "boolean"
-							}
-						},
-						"required": [
-							"telegram",
-							"whatsapp"
-						],
-						"type": "object"
-					},
-					"webHooks": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"collectionGroup": {
-						"type": "string"
-					},
-					"userId": {
-						"type": "string"
-					},
-					"formId": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"form",
-					"header",
-					"userId",
-					"formId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -243,7 +193,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IFillForm": {
+			"IResponse": {
 				"properties": {
 					"formId": {
 						"type": "string"
@@ -252,13 +202,22 @@
 						"additionalProperties": false,
 						"type": "object"
 					},
+					"channel": {
+						"type": "string",
+						"enum": [
+							"whatsapp",
+							"telegram",
+							"web"
+						]
+					},
 					"fillId": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"formId",
-					"data"
+					"data",
+					"channel"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -714,7 +673,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/IUpdate"
+								"$ref": "#/components/schemas/ICreate"
 							}
 						}
 					}
@@ -1039,9 +998,12 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"message": {
+										"error": {
 											"additionalProperties": false,
 											"type": "object"
+										},
+										"message": {
+											"type": "string"
 										},
 										"status": {
 											"type": "number",
@@ -1056,6 +1018,43 @@
 										}
 									},
 									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
 										"message",
 										"status",
 										"success"
@@ -1076,9 +1075,9 @@
 				"parameters": []
 			}
 		},
-		"/form/fill/{formId}": {
+		"/form/response/{formId}": {
 			"post": {
-				"operationId": "Fill",
+				"operationId": "Response",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -1185,7 +1184,7 @@
 						}
 					},
 					"409": {
-						"description": "Failed to fill form"
+						"description": "Failed to create response"
 					},
 					"500": {
 						"description": "",
@@ -1226,7 +1225,7 @@
 				},
 				"tags": [
 					"Forms",
-					"Fill",
+					"Response",
 					"Forms"
 				],
 				"security": [],
@@ -1245,7 +1244,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/IFillForm"
+								"$ref": "#/components/schemas/IResponse"
 							}
 						}
 					}

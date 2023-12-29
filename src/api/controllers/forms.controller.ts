@@ -3,7 +3,7 @@ import formsServices from '../services/forms.services'
 // import * as validations from '../validations/fom.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
 import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch } from 'tsoa'
-import IFormService, { ICreate, IDelete, IFillForm, IGet, IGetAll, IUpdate } from '../interfaces/forms.interface'
+import IFormService, { ICreate, IDelete, IResponse, IGet, IGetAll } from '../interfaces/forms.interface'
 import { signToken } from '../utils/tokenizer'
 
 @Route('form')
@@ -47,7 +47,7 @@ export class formController extends Controller {
   public async update(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
     @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object  }>,
-    @Body() payload: IUpdate,
+    @Body() payload: ICreate,
     @Request() request: any
   ): Promise<any> {
     try {
@@ -57,8 +57,8 @@ export class formController extends Controller {
         return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
       }
       // await validations.
-      const form = await formsServices.Update({ ...payload, userId: request.decodedUser.userId })
-      const jwt = await signToken(request.decodedUser)
+      const form = await formsServices.Update(payload, request.params.id, request.decodedUser.userId)
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       // send the user a verification email
       //const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
       // send the user a verification email
@@ -112,17 +112,7 @@ export class formController extends Controller {
     @Request() request: any
   ): Promise<any> {
     try {
-      // if (request.headers['x-auth-token'] || request.headers['authorization']){
-      //   await decodeTokenMiddleware(request)
-      // }
-
-      // if (!request.decodedUser.userId) {
-      //   console.log('no user id', request.decodedUser)
-      //   // return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
-      // }
-      // await validations.
       const form = await formsServices.get({ formId: id})
-      // console.log('form', form)
       let jwt = request.decodedUser ? await signToken(request.decodedUser) : ''
       // send the user a verification email
       //const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
@@ -139,14 +129,20 @@ export class formController extends Controller {
   @Get()
   @Response(200, 'Forms fetched successfully')
   @Response(409, 'Failed to fetch forms')
+  @Response(401, 'Access denied')
   public async getAll(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
-    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
+    @Res() sendError: TsoaResponse<400 | 401, { success: false, status: number, message: string, error: object }>,
+    @Request() request: any
   ): Promise<any> {
     try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {message: 'invalid or no token provided', place: 'request>headers>x-auth-token'} })
+      }
       //await validations.signup.validateAsync(payload)
       // create the user
-      const form = await formsServices.getAll()
+      const form = await formsServices.getAll({ userId: request.decodedUser.userId })
       //const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
       // send the user a verification email
       sendSuccess(201, { success: true, data: form }, /* set the jwt */)
@@ -156,14 +152,14 @@ export class formController extends Controller {
   }
 
   // routes for filling of forms
-  @Tags('Forms', 'Fill')
-  @Post('/fill/:formId')
-  @Response(201, 'Form filled successfully')
-  @Response(409, 'Failed to fill form')
-  public async fill(
+  @Tags('Forms', 'Response')
+  @Post('/response/:formId')
+  @Response(201, 'Response created successfully')
+  @Response(409, 'Failed to create response')
+  public async response(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
     @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
-    @Body() payload: IFillForm,
+    @Body() payload: IResponse,
     @Path('formId') formId: string,
     @Request() request: any
   ): Promise<any> {

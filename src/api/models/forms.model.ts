@@ -38,23 +38,29 @@ const Form = model('Form', new Schema({
   sx: { type: Object, default:null, required: false },
   webHooks: [String],
   socials: {
-    whatsapp: Boolean,
-    telegram: Boolean
+    whatsapp: {type: Boolean, default: false},
+    telegram: {type: Boolean, default: false},
   },
+  createdAt: { type: Date, default: Date.now },
+  responseCount: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
+  type: { type: String, enum: ['form', 'survey', 'quiz', 'questionniar'], default: 'form' },
   activationDate:{type: Date, default: new Date().toISOString()},
   deactivatioDate:{type: Date},
   deactivationReason:{type:String},
+  updatedAt: { type: Date, default: Date.now },
   userId:{type: mongoose.Types.ObjectId, required: true}
 
 }), 'form');
 
-export const FillFormModel = model('FillForm', new Schema({
+export const ResponseModel = model('Response', new Schema({
   formId: { type: mongoose.Types.ObjectId, required: true },
   data: { type: Object, required: true },
+  channel: { type: String, enum: ['whatsapp', 'telegram', 'web'], default: 'web' },
   fillId: { type: String, required: false },
   userId: { type: mongoose.Types.ObjectId, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-}), 'fillForm');
+}), 'responses');
 
 export default Form;
