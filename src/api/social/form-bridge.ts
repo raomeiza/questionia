@@ -55,7 +55,6 @@ class FormBridge {
               input.type === "text" ||
               input.type === "email" ||
               input.type === "textarea" ||
-              input.type === "autocomplete" ||
               input.type === "mobile"
             ) {
               input.telegram = [
@@ -70,9 +69,7 @@ class FormBridge {
               ];
               input.telegram_need_confirmation = true // for text inputs, the user must confirm the input before it is sent
             } else if (
-              input.type === "select" ||
               input.type === "buttonGroup" ||
-              input.type === "checkbox" ||
               input.type === "radio"
             ) {
               input.telegram = [
@@ -93,7 +90,66 @@ class FormBridge {
                 },
             ];
             input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
+            } else if(
+              input.type === "select" ||
+              input.type === "checkbox" ||
+              input.type === "autocomplete"
+            ){
+              input.telegram_button_options = []
+              input.telegram_is_button_input = true
+              
+              // create a reply keyboard for options of the input
+              input.telegram = [
+                this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
+                {
+                  parse_mode: 'MarkdownV2',
+                  reply_markup: {
+                    keyboard: input.options.map((option: any, index: number) => {
+                      input.telegram_button_options.push(option.label)
+                      return [
+                        {
+                          text: option.label,
+                        },
+                        // if this is the last option nd this is an autocomplete input,
+                        // add a button asking the user if they want to add a new option
+                        ...(index === input.options.length - 1 && input.type === "autocomplete" ? [
+                          {
+                            text: "Add new option",
+                          }
+                        ] : [])
+                      ];
+                    }),
+                    resize_keyboard: true,
+                    one_time_keyboard: !input.multiple,
+                  },
+                },
+              ];
+              input.telegram_is_button = true // for select inputs, the user does not need to confirm the input before it is sent
             }
+            // else if(
+            //   input.type === "date" ||
+            //   input.type === "time" ||
+            //   input.type === "datetime-local"
+            // ){
+            //   input.telegram = [
+            //     this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
+            //     {
+            //       parse_mode: 'MarkdownV2',
+            //       reply_markup: {
+            //         inline_keyboard: [
+            //           [
+            //             {
+            //               text: "Select date",
+            //               callback_data: formId,
+            //             },
+            //           ],
+            //         ],
+            //       },
+            //     },
+            //   ];
+            //   input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
+            // }
+            
             input.nextInput =
               form.form.inputs.length > index + 1
                 ? form.form.inputs[index + 1]._id.toString()
