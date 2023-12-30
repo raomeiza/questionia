@@ -16,6 +16,7 @@ import { refreshToken } from './utils/tokenizer';
 const swaggerDocument = require('../../docs/swagger.json');
 import paystack from './paystack/index';
 import telegram from './telegram/index';
+import { sendMail, sendSms } from './utils/sms-and-email';
 
 console.log(BASE_URL)
 // Instance of express

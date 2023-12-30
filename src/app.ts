@@ -2,13 +2,28 @@ import {createServer} from 'http';
 import app from './api'; // index.ts
 import { PORT, BASE_URL } from './config';
 import logger from './api/utils/logger';
+import { sendMail, sendSms } from './api/utils/sms-and-email';
 
 // Spin server
 const server = createServer(app);
-server.listen(PORT, () => logger.info(`Server listening on ${PORT}`));
+server.listen(PORT, () => {
+  logger.info(`Server listening on ${PORT}`)
+  sendSms('+2347044124767', `server restarted at ${new Date().toUTCString()}`);
+  sendMail(
+    'blesseth.omeiza@gmail.com',
+    'Questionia server restarted',
+    `server restarted at ${new Date().toUTCString()}`
+  );
+});
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
+  sendSms('+2347044124767', `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`);
+  sendMail(
+    'blesseth.omeiza@gmail.com',
+    'Questionia shutting down due to uncaught exception',
+    `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`
+  );
   logger.error(err);
   logger.info('Shutting down due to uncaught exception');
   // Close server & exit process
@@ -17,6 +32,12 @@ process.on('uncaughtException', (err) => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err:any) => {
+  sendSms('+2347044124767', `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`);
+  sendMail(
+    'blesseth.omeiza@gmail.com',
+    'Questionia shutting down due to unhandled promise rejection',
+    `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`
+  );
   logger.error(err);
   // Close server & exit process
   logger.info('Shutting down the server due to Unhandled Promise rejection');
