@@ -548,7 +548,7 @@ const saveForm = async (replies: any, formId: String, userId: string) => {
   }
   telegramInstance.sendMessage(
     userId,
-    "Thank you for your response. Your response has been saved."
+    "Thank you for your time. Your response has been saved."
   );
   chat.delete(userId);
 };

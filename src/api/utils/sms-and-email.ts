@@ -29,11 +29,9 @@ const sendSms = async (to:any, body:any) => {
     })
     .then(() => console.log('SMS sent successfully'))
     .catch((err:any) => {
-      console.log('SMS sending failed', err);
    });
     // .done();
   } catch (err:any) {
-    console.log('SMS sending failed', err);
     
   }
 };
@@ -48,9 +46,7 @@ const sendMail = async (email:string, subject:string, message:any) => {
       html: message,
     };
     const sent = await sendGridMail.send(data);
-    console.log('Email sent successfully', sent);
   } catch (err:any) {
-    console.log('Email sending failed', err);
     
   }
 };

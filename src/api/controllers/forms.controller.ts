@@ -171,10 +171,92 @@ export class formController extends Controller {
       //   return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
       // }
       // await validations.
-      const form = await formsServices.fillForm(payload)
+      const response = await formsServices.fillForm(payload)
       // const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       // send the user a verification email
-      sendSuccess(201, { success: true, data: form }, /* set the jwt  { 'x-auth-token': jwt }*/)
+      sendSuccess(201, { success: true, data: response }, /* set the jwt  { 'x-auth-token': jwt }*/)
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for fetching form response by form id
+  @Tags('Forms', 'Response')
+  @Get('/response/:formId/:responseId')
+  @Response(200, 'Response fetched successfully')
+  @Response(409, 'Failed to fetch response')
+  @Response(401, 'Access denied')
+  public async getResponse(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Path('responseId') responseId: string,
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+      // create the user
+      const response = await formsServices.getResponse({ responseId })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: response }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for fetching all form response by form id
+  @Tags('Forms', 'Response')
+  @Get('/response/:formId')
+  @Response(200, 'Responses fetched successfully')
+  @Response(409, 'Failed to fetch responses')
+  @Response(401, 'Access denied')
+  public async getAllResponse(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+      // create the user
+      const responses = await formsServices.getAllResponses({ formId })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: responses }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for counting form response by form id
+  @Tags('Forms', 'Response')
+  @Get('/response/count/:formId')
+  @Response(200, 'Responses fetched successfully')
+  @Response(409, 'Failed to fetch responses')
+  @Response(401, 'Access denied')
+  public async countResponse(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+      // create the user
+      const count = await formsServices.countResponses({ formId })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: count }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

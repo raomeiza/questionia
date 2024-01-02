@@ -1249,6 +1249,486 @@
 						}
 					}
 				}
+			},
+			"get": {
+				"operationId": "GetAllResponse",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to fetch responses"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Response",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/form/response/{formId}/{responseId}": {
+			"get": {
+				"operationId": "GetResponse",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to fetch response"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Response",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "responseId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/form/response/count/{formId}": {
+			"get": {
+				"operationId": "CountResponse",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to fetch responses"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Response",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/user/signup": {

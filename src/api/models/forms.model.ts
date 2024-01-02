@@ -57,10 +57,9 @@ export const ResponseModel = model('Response', new Schema({
   formId: { type: mongoose.Types.ObjectId, required: true },
   data: { type: Object, required: true },
   channel: { type: String, enum: ['whatsapp', 'telegram', 'web'], default: 'web' },
-  fillId: { type: String, required: false },
   userId: { type: mongoose.Types.ObjectId, required: false },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+  lastUpdated: { type: Date, default: Date.now },
 }), 'responses');
 
 export default Form;

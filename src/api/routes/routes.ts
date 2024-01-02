@@ -317,6 +317,91 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/form/response/:formId/:responseId',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.getResponse)),
+
+            function formController_getResponse(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    responseId: {"in":"path","name":"responseId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.getResponse.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/form/response/:formId',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.getAllResponse)),
+
+            function formController_getAllResponse(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.getAllResponse.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/form/response/count/:formId',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.countResponse)),
+
+            function formController_countResponse(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.countResponse.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/user/signup',
             ...(fetchMiddlewares<RequestHandler>(userController)),
             ...(fetchMiddlewares<RequestHandler>(userController.prototype.signup)),

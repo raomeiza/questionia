@@ -123,7 +123,10 @@ export class FormService implements IFormService {
             _id: "$_id",
             title: { $first: "$header" }, // keep the header field
             socials: { $first: "$socials" }, // keep the socials field
-            "activation Date": { $first: "$activationDate" }, // keep the activationDate field
+            "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
+            "Group": { $first: "$collectionGroup" || "none" }, // keep the group field
+            "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
+            "Expiry Date": { $first: "$expiryDate" }, // keep the expiryDate field
             type: { $first: "$type" }, // keep the type field
             views: { $first: "$views" }, // keep the views field
             webhooks: { $first: "$webHooks" }, // keep the webhooks field
@@ -148,7 +151,7 @@ export class FormService implements IFormService {
             },
           },
         },
-        // { $sort: { _id: -1 } }, // sort the forms by descending order
+        { $sort: { _id: -1 } }, // sort the forms by descending order
         { $skip: skip }, // skip the documents that have already been fetched
         { $limit: pageSize }, // limit the number of documents to be fetched
         {
@@ -161,8 +164,27 @@ export class FormService implements IFormService {
               whatsapp: "$whatsapp", // add the whatsapp responses
               web: "$web", // add the web responses
             },
+            "_qs": {
+              _id: "$_id",
+            }
           },
         },
+        {
+          $project: {
+            // project the fields to be returned
+            _id: 1,
+            title: 1,
+            socials: 1,
+            "Activation Date": 1,
+            "Group": 1,
+            "Last Updated": 1,
+            "Expiry Date": 1,
+            type: 1,
+            views: 1,
+            webhooks: 1,
+            responses: 1,
+          },
+        }
       ]);
     } catch (err: any) {
       throw {
@@ -199,6 +221,72 @@ export class FormService implements IFormService {
     } catch (err: any) {
       throw {
         message: err.message || "Failed to fetch forms",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async getAllResponses({ formId, page, pageSize }: any): Promise<any> {
+    try {
+     const skip = (page - 1) * pageSize;
+return await this.responseModel.aggregate([
+  { $match: { formId: new Types.ObjectId(formId) } },
+  {
+    $lookup: {
+      from: "form", // replace with your actual form collection name
+      localField: "formId",
+      foreignField: "_id",
+      as: "form"
+    }
+  },
+  { $unwind: "$form" }, // flatten the form array
+  { 
+    $addFields: {
+      "data._qs": {
+        _id: "$_id",
+        channel: "$channel",
+        createdTime: "$createdTime",
+        timeTaken: "$timeTaken",
+      },
+      formTitle: "$form.header" // add the form title to the output
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      data: 1,
+      formTitle: 1
+    }
+  }
+]);
+    } catch (err: any) {
+      throw {
+        message: err.message || "Failed to fetch responses",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async countResponses({ formId }: any): Promise<any> {
+    try {
+      return await this.model.findById(formId).select("responseCount");
+    } catch (err: any) {
+      throw {
+        message: err.message || "Failed to fetch responses",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async getResponse({reponseId}: any): Promise<any> {
+    try {
+      return await this.responseModel.findById(reponseId);
+    } catch (err: any) {
+      throw {
+        message: err.message || "Failed to fetch responses",
         error: err,
         status: err.status || err.errorStatus || 404,
       };
