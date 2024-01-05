@@ -79,7 +79,6 @@ const handleResponse = async (ctx: any, type: string) => {
               finalizeForm(_chatSession.replies, _chatSession.formId, userId);
               return;
             }
-            console.log("nextInput", nextInput);
             // send the user the next input
             telegramInstance
             //@ts-ignore
@@ -147,6 +146,13 @@ const handleResponse = async (ctx: any, type: string) => {
             },
           ];
         });
+        // add a button for continuing without editing any input
+        buttons.push([
+          {
+            text: "Continue, I don't want to edit any input",
+            callback_data: `${confFormId}__continue`,
+          },
+        ]);
         telegramInstance.sendMessage(
           userId,
           "Which input do you want to edit?",
@@ -211,6 +217,9 @@ const handleResponse = async (ctx: any, type: string) => {
           "You have cancelled filling this form"
         );
         return;
+      } else if (action === "continue") {
+        finalizeForm(chat.get(chatId).replies, confFormId, userId);
+        return;
       }
       // for cancel.cancel, do nothing. allow the flow to continue
     }
@@ -247,9 +256,10 @@ const handleResponse = async (ctx: any, type: string) => {
             inputIds: ["0"],
           });
         });
-      } else {
-        telegramInstance.sendMessage(userId, "You are not filling a form");
       }
+      //  else {
+      //   telegramInstance.sendMessage(userId, "You are not filling a form");
+      // }
       return;
     }
     const { formId, inputId, nextInput, replies, prevMessageId } = chatSession;
@@ -258,7 +268,6 @@ const handleResponse = async (ctx: any, type: string) => {
 
     // if the input is not confirmed, send the user a query asking if the input is correct or not
     if (type === "message") {
-      console.log("prevMessage", prevMessage);
       if (!prevMessage.telegram_button_options) {
         let response = ctx.text;
         if (!response) {
@@ -366,7 +375,7 @@ const handleResponse = async (ctx: any, type: string) => {
   } catch (error) {
     telegramInstance.sendMessage(
       userId,
-      "This form does not appear to be valid or has been deleted. Please contact the form owner"
+      "An error occured while processing your response. Please try again or contact the form owner"
     );
   }
 };
@@ -406,7 +415,8 @@ telegramInstance.on("message", async (ctx) => {
       telegramInstance.sendMessage(
         //@ts-ignore
         ctx?.from?.id,
-        "Please provide a valid form id./n/nThe command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b"
+        "Please provide a valid form id./n/nThe command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b",
+        { parse_mode: "MarkdownV2"}
       );
       return;
     }
@@ -421,8 +431,9 @@ telegramInstance.on("message", async (ctx) => {
     });
     telegramInstance.sendMessage(
       ctx?.from?.id || 6554560778,
-      `Do you want to cancel filling this form with id ${formId}?`,
+      `Do you want to cancel filling this form with id *${formId}*?`,
       {
+        parse_mode: "MarkdownV2",
         reply_markup: {
           inline_keyboard: buttons,
         },
@@ -444,7 +455,8 @@ telegramInstance.onText(/\/start/, async (ctx) => {
       telegramInstance.sendMessage(
         //@ts-ignore
         ctx?.from?.id,
-        "Please provide a valid form id./n/nThe command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b"
+        "Please provide a valid form id./n/nThe command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b",
+        { parse_mode: "MarkdownV2"}
       );
       return;
     }
@@ -459,8 +471,9 @@ telegramInstance.onText(/\/start/, async (ctx) => {
     });
     telegramInstance.sendMessage(
       ctx?.from?.id || 6554560778,
-      `Do you want to start filling this form with id ${formId}?`,
+      `Do you want to start filling this form with id *${formId}*?`,
       {
+        parse_mode: "MarkdownV2",
         reply_markup: {
           inline_keyboard: buttons,
         },
@@ -489,8 +502,9 @@ telegramInstance.onText(/\/start/, async (ctx) => {
     });
     telegramInstance.sendMessage(
       ctx?.from?.id || 6554560778,
-      `Do you want to cancel filling this form with id ${formId}?`,
+      `Do you want to cancel filling this form with id *${formId}*?`,
       {
+        parse_mode: "MarkdownV2",
         reply_markup: {
           inline_keyboard: buttons,
         },
@@ -501,6 +515,7 @@ telegramInstance.onText(/\/start/, async (ctx) => {
 });
 
 const finalizeForm = async (replies: any, formId: String, userId: string) => {
+  try {
   let session = chat.get(userId);
   session.completed = true; // set the session as completed. this does not mean the form is saved
   // but is necessary to keep track in case the user decides to correct any of the inputs
@@ -509,7 +524,7 @@ const finalizeForm = async (replies: any, formId: String, userId: string) => {
   let message = "Please confirm your answers below:";
   for (const [key, value] of replies.entries()) {
     message += formBridge.escapeMarkdown(
-      `\n\n*${value.question}\n\n${value.answer}`
+      `\n\n${value.question}\n*${value.answer}*`
     );
   }
   // create an inline keyboard for submiting, editing or cancelling the form
@@ -526,6 +541,12 @@ const finalizeForm = async (replies: any, formId: String, userId: string) => {
       inline_keyboard: buttons,
     },
   });
+  } catch (error) {
+    telegramInstance.sendMessage(
+      userId,
+      "An error occured while finalizing your response. Please try again"
+    );
+  }
 };
 
 const saveForm = async (replies: any, formId: String, userId: string) => {
