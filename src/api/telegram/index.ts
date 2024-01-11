@@ -17,7 +17,21 @@ telegramInstance.on("webhook_error", (error: any) => {
 
 
 // webhook
-router.post("/webhook", async (req, res) => {
+router.post("/", async (req, res) => {
+  console.log(req.body)
+  try {
+    const { message } = req.body;
+    const response = await telegramInstance.sendMessage(
+      message.chat.id,
+      "Hello World"
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+router.get("/", async (req, res) => {
+  console.log(req.body)
   try {
     const { message } = req.body;
     const response = await telegramInstance.sendMessage(
