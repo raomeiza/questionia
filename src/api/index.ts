@@ -55,10 +55,10 @@ app.get('/ping', (req, res) => {
 }
 );
 
-app.use('*', (req, res, next) => {
-  resetInterval();
-  next();
-})
+// app.use('*', (req, res, next) => {
+//   resetInterval();
+//   next();
+// })
 
 app.use('/paystack', paystack);
 app.use(cors({
