@@ -1,8 +1,7 @@
 import jwt, { Secret } from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../../config';
 
-  export const signToken = async (payload: any, duration?: string): Promise<string> => {
-    duration = duration || '2h';
+  export const signToken = async (payload: any, expiresIn: string = '24h'): Promise<string> => {
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');
@@ -10,7 +9,7 @@ import { JWT_SECRET_KEY } from '../../config';
     // sign the token using try catch to handle errors
     try {
       // sign the token using the secret key that expires in 1 hour
-      return jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '1h' });
+      return jwt.sign(payload, JWT_SECRET_KEY, { expiresIn });
     }
     // if there is an error throw it
     catch (err) {
@@ -38,17 +37,18 @@ import { JWT_SECRET_KEY } from '../../config';
   }
 
   // create a method that will refresh a token using the constructor secret key
-  export const refreshToken = async (token: any): Promise<string> => {
+  export const refreshToken = async (token: any, expiresIn: string = '24h'): Promise<string> => {
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');
     }
     // refresh the token using try catch to handle errors
     try {
+      token = jwt.verify(token, JWT_SECRET_KEY);
       // delete the token exp and iat
       delete token.exp;
       delete token.iat;
-      return jwt.sign(token, JWT_SECRET_KEY, { expiresIn: '1h' });
+      return jwt.sign(token, JWT_SECRET_KEY, { expiresIn });
     }
     // if there is an error throw it
     catch (err) {
