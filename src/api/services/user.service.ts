@@ -162,7 +162,7 @@ export class UserService implements IUserService {
   async resetPassword(resource: IResetPassword): Promise<any> {
     try {
       return await this.model.findOneAndUpdate({email: resource.email},
-        { $set: { password: resource.password, passwordResetToken: null } })
+        { $set: { password: resource.password}, $unset: { passwordResetToken: 1 } })
         .orFail(() => <any>'User not found');
 
     } catch (err: any) {
@@ -173,7 +173,7 @@ export class UserService implements IUserService {
   async verifyEmail(resource: IVerifyEmail2): Promise<any> {
     try {
       return await this.model.findOneAndUpdate({id: resource.userId, emailToken: resource.token},
-        { $set: { emailToken: null } })
+        { $unset: { emailToken: 1 } })
         .orFail(() => <any>'User not found');
 
     } catch (err: any) {
