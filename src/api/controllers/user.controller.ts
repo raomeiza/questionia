@@ -3,9 +3,9 @@ import userService from '../services/user.service'
 import * as password from '../utils/password'
 import * as validations from '../validations/user.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
-import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch } from 'tsoa'
+import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch, Header } from 'tsoa'
 import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
-import { signToken } from '../utils/tokenizer'
+import { signToken, verifyToken, refreshToken } from '../utils/tokenizer'
 import sendEmail from '../utils/email'
 
 @Route('user')
@@ -78,13 +78,17 @@ export class userController extends Controller {
   public async createProfile(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
-    @Body() payload: IPatchUser
+    @Body() payload: IPatchUser,
+    @Header('x-auth-token') token: string,
   ): Promise<any> {
     try {
+      if(!token) {
+        throw { status: 401, message: 'Unauthorized' }
+      }
+      const jwt = await refreshToken(token)
       await validations.profile.validateAsync(payload)
       // verify the token
       const user = await userService.createProfile(payload)
-      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -159,20 +163,18 @@ export class userController extends Controller {
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
     @Path() userId: string,
-    @Request() request: any
+    @Header('x-auth-token') token: string,
   ): Promise<any> {
     try {
-
-      // authenticate the user
-      await decodeTokenMiddleware(request)
-      if (request.decodedUser.userId !== userId && request.decodedUser.role !== 'admin'){ 
-        return await handleErrorResponse(sendError, {status: 401, message: 'Unauthorized'})
+      if(!token) {
+        throw { status: 401, message: 'Unauthorized' }
       }
+      const jwt = await refreshToken(token)
+      // authenticate the user
 
       await validations.isMongoIdValid(userId)
       // verify the token
       const user = await userService.getUser({userId})
-      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -192,20 +194,21 @@ export class userController extends Controller {
   public async deleteUser(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
-    @Request() request: any,
+    @Header('x-auth-token') token: string,
     @Body() payload: IGetUser
   ): Promise<any> {
     try {
-      // authenticate the user
-      await decodeTokenMiddleware(request)
-      if(!request.decodedUser.is_admin) {
+      if(!token) {
         throw { status: 401, message: 'Unauthorized' }
       }
-
+      const thisUser = await verifyToken(token)
+      if(!thisUser.is_admin) {
+        throw { status: 401, message: 'Unauthorized' }
+      }
+      const jwt = await refreshToken(token)
       await validations.isMongoIdValid(payload.userId)
       // verify the token
       const user = await userService.delete(payload)
-      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
         sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -219,13 +222,14 @@ export class userController extends Controller {
   public async refreshToken(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
-    @Request() request: any
+    @Header('x-auth-token') token: string,
   ): Promise<any> {
     try {
-      // authenticate the user
-      await decodeTokenMiddleware(request)
-      const jwt = await signToken(request.decodedUser)
-      sendSuccess(200, { success: true, data: { jwt } })
+      if(!token) {
+        throw { status: 401, message: 'Unauthorized' }
+      }
+      const jwt = await refreshToken(token)
+      sendSuccess(200, { success: true, data: { jwt } }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

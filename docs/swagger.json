@@ -2121,7 +2121,16 @@
 					"USERS"
 				],
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "x-auth-token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -2564,6 +2573,14 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"in": "header",
+						"name": "x-auth-token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
 					}
 				]
 			}
@@ -2700,7 +2717,16 @@
 					"USERS"
 				],
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "x-auth-token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -2848,7 +2874,16 @@
 					"USERS"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "header",
+						"name": "x-auth-token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/user/initiate-password-reset": {

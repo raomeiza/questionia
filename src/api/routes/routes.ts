@@ -476,6 +476,7 @@ export function RegisterRoutes(app: express.Router) {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     payload: {"in":"body","name":"payload","required":true,"ref":"IPatchUser"},
+                    token: {"in":"header","name":"x-auth-token","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -557,7 +558,7 @@ export function RegisterRoutes(app: express.Router) {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    token: {"in":"header","name":"x-auth-token","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -584,7 +585,7 @@ export function RegisterRoutes(app: express.Router) {
             const args = {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    token: {"in":"header","name":"x-auth-token","required":true,"dataType":"string"},
                     payload: {"in":"body","name":"payload","required":true,"ref":"IGetUser"},
             };
 
@@ -612,7 +613,7 @@ export function RegisterRoutes(app: express.Router) {
             const args = {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    token: {"in":"header","name":"x-auth-token","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
