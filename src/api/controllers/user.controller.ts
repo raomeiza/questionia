@@ -3,21 +3,14 @@ import userService from '../services/user.service'
 import * as password from '../utils/password'
 import * as validations from '../validations/user.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
-import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path } from 'tsoa'
+import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch } from 'tsoa'
 import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
 import { signToken } from '../utils/tokenizer'
+import sendEmail from '../utils/email'
 
 @Route('user')
 @Tags('USERS')
 export class userController extends Controller {
-  /**
-   * @description - first step to validating a pre registered account
-   * */
-  @Example({
-    password: '123456qwerty',
-    repeat_passwork: '123456qwerty',
-    email: 'peddleCustomer@peddle.com'
-  })
   @Post('signup')
   @Response(201, 'Registered successfully')
   // email already in use
@@ -44,14 +37,6 @@ export class userController extends Controller {
     }
   }
 
-  /**
-   * @description - second step to validating a pre registered account
-   * */
-  @Example({
-    userId: '60a1c1c1c1c1c1c1c1c1c1c1',
-    token: 123456,
-    tokenRoute: 'email'
-  })
   @Post('verify')
   @Response(201, 'Verified successfully')
   // token not valid
@@ -222,6 +207,68 @@ export class userController extends Controller {
       const user = await userService.delete(payload)
       const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
         sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // create an endpoint for refreshing token
+  @Post('refresh-token')
+  @Response(201, 'Token refreshed successfully')
+  @Response(401, 'Unauthorized')
+  public async refreshToken(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      // authenticate the user
+      await decodeTokenMiddleware(request)
+      const jwt = await signToken(request.decodedUser)
+      sendSuccess(200, { success: true, data: { jwt } })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  @Post('initiate-password-reset')
+  // @Example<IUserResponse>(userResponse)
+  @Response(201, 'password reset initiated successfully an email has been sent to the user with the reset token')
+  public async initiatePasswordReset(
+    @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
+    @Body() payload: { email: string }
+  ): Promise<any> {
+    try {
+      validations.forgotPassword.validateAsync(payload) // validate the payload
+      const emailToken = await userService.forgotPassword(payload)
+      const sent = await sendEmail('Password Reset Token', `Your password reset token is ${emailToken}`, payload.email)
+      sendSuccess(201, { success: true, data: null })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  /**
+   * @function Change password for a user
+   * @implements adminService.ChangePassword
+   * @param email user email
+   * @param password user password
+   * @return {Promise<object>} user profile jsoned object
+   */
+  // @Example<IUserPayload>(userPayload)
+  @Patch('change-password')
+  // @Example<IUserResponse>(userResponse)
+  @Response(201, 'password changed successfully')
+  public async changePassword(
+    @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
+    @Body() payload: IResetPassword
+  ): Promise<any> {
+    try {
+      validations.resetPassword.validateAsync(payload) // validate the payload
+      const updatedUser = await userService.resetPassword(payload)
+      sendSuccess(201, { success: true, data: updatedUser }, /* set the jwt */ )
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

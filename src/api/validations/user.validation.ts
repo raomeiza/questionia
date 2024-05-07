@@ -59,6 +59,7 @@ export const resetPassword = Joi.object().keys({
   userId: Joi.string().custom(validationUtils.isMongoIdValid).required(),
   token: Joi.string().length(4),
   password: Joi.string().regex(validationUtils.passwordRegexWithoutSpecialChar).error(validationUtils.passwordRegexWithoutSpecialCharError).required(),
+  repeatPassword: Joi.required().valid(Joi.ref('password')).error(new Error('Passwords do not match')),
 });
 
 export const forgotPassword = Joi.object().keys({
