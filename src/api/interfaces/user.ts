@@ -22,6 +22,7 @@ export interface IForgotPassword {
 export interface IResetPassword {
   email: string;
   password: string;
+  repeatPassword: string;
   token: string;
 }
 
