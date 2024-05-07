@@ -139,6 +139,17 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IResetPassword": {
+        "dataType": "refObject",
+        "properties": {
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string","required":true},
+            "repeatPassword": {"dataType":"string","required":true},
+            "token": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -587,6 +598,87 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.deleteUser.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/user/refresh-token',
+            ...(fetchMiddlewares<RequestHandler>(userController)),
+            ...(fetchMiddlewares<RequestHandler>(userController.prototype.refreshToken)),
+
+            function userController_refreshToken(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new userController();
+
+
+              const promise = controller.refreshToken.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/user/initiate-password-reset',
+            ...(fetchMiddlewares<RequestHandler>(userController)),
+            ...(fetchMiddlewares<RequestHandler>(userController.prototype.initiatePasswordReset)),
+
+            function userController_initiatePasswordReset(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new userController();
+
+
+              const promise = controller.initiatePasswordReset.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/user/change-password',
+            ...(fetchMiddlewares<RequestHandler>(userController)),
+            ...(fetchMiddlewares<RequestHandler>(userController.prototype.changePassword)),
+
+            function userController_changePassword(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    payload: {"in":"body","name":"payload","required":true,"ref":"IResetPassword"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new userController();
+
+
+              const promise = controller.changePassword.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
