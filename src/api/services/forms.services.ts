@@ -198,7 +198,7 @@ export class FormService implements IFormService {
   async fillForm(resource: IResponse): Promise<any> {
     try {
       // verify if the form exists and if it is active by feching only necessary fields
-      const form = await this.model.findById(resource.formId).select('isActive isPublic');
+      const form = await this.model.findById(resource.formId).select('isActive isPublic').lean();
       if (form) {
         // @ts-ignore
         if (!form.isActive || !form.isPublic) {
