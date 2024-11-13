@@ -161,8 +161,8 @@ export class formController extends Controller {
     @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
     @Body() payload: IResponse,
     @Path('formId') formId: string,
-    @Request() request: any
   ): Promise<any> {
+    console.log('payload', payload)
     try {
       //await validations.signup.validateAsync(payload)
       // await decodeTokenMiddleware(request)

@@ -124,7 +124,7 @@ export class FormService implements IFormService {
             title: { $first: "$header" }, // keep the header field
             socials: { $first: "$socials" }, // keep the socials field
             "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
-            "Group": { $first: "$collectionGroup" || "none" }, // keep the group field
+            "Group": { $first: { $ifNull: ["$collectionGroup", "none"] } }, // keep the group field
             "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
             "Expiry Date": { $first: "$expiryDate" }, // keep the expiryDate field
             type: { $first: "$type" }, // keep the type field
@@ -197,20 +197,19 @@ export class FormService implements IFormService {
 
   async fillForm(resource: IResponse): Promise<any> {
     try {
-      //verify if the form exists and if it is active by feching only necessary fields
-      // const form = await this.model.findById(resource.formId).select('isActive isPublic');
-      // if (form) {
-      //   if (form.isActive && form.isPublic) {
-      //     return form;
-      //   } else {
-      //     throw({message: 'form is not active', status: 400})
-      //   }
-      // } else {
-      //   throw({message: 'form not found', status: 404})
-      // }
+      // verify if the form exists and if it is active by feching only necessary fields
+      const form = await this.model.findById(resource.formId).select('isActive isPublic');
+      if (form) {
+        // @ts-ignore
+        if (!form.isActive || !form.isPublic) {
+         
+          throw({message: 'form is not active', status: 400})
+        }
+      } else {
+        throw({message: 'form not found', status: 404})
+      }
       let filled = this.responseModel.create({
-        formId: resource.formId,
-        data: resource.data,
+        ...resource,
       });
       // update the response count of the form
       await this.model.findByIdAndUpdate(resource.formId, {

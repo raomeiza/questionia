@@ -17,19 +17,19 @@ const swaggerDocument = require('../../docs/swagger.json');
 import paystack from './paystack/index';
 import telegramInstance from './social/telegram'
 
-const intervals = [ 3, 5,  7, 10];
-let pingInterval = setInterval(() => {
-  telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-}, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
+// const intervals = [ 3, 5,  7, 10];
+// let pingInterval = setInterval(() => {
+//   telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
+// }, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
 
-const resetInterval = () => {
-  clearInterval(pingInterval);
-  const newInterval = intervals[Math.floor(Math.random() * intervals.length)];
-  console.log(`New interval is ${newInterval} minutes`)
-  pingInterval = setInterval(() => {
-    telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${newInterval} minutes`)
-  }, 1000 * 60 * newInterval);
-}
+// const resetInterval = () => {
+//   clearInterval(pingInterval);
+//   const newInterval = intervals[Math.floor(Math.random() * intervals.length)];
+//   console.log(`New interval is ${newInterval} minutes`)
+//   pingInterval = setInterval(() => {
+//     telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${newInterval} minutes`)
+//   }, 1000 * 60 * newInterval);
+// }
 
 console.log(BASE_URL)
 // Instance of express

@@ -54,7 +54,7 @@ export interface IGet {
 
 export interface IResponse extends IGet {
   data: object
-  channel: 'whatsapp' | 'telegram' | 'web'
+  channel: ('whatsapp' | 'telegram' | 'web' | 'email' | 'webhook')[]
   fillId?: string
 }
 
