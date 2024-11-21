@@ -20,6 +20,7 @@ export interface Input {
 
 export interface StandardForm {
   title?: string;
+  description?: string;
   url?: string;
   inputs: Input[];
   btnTxt?: string;
@@ -37,10 +38,7 @@ export interface ICreate {
   sx?: { [x: string]: any },
   activationDate?: string,
   expiryDate?: string,
-  social?: {
-    whatsapp: boolean
-    telegram: boolean
-  },
+  social?: ('whatsapp' | 'telegram' | 'web')[],
   webHooks?: string[]
   collectionGroup?: string,
   userId: string,
@@ -54,7 +52,7 @@ export interface IGet {
 
 export interface IResponse extends IGet {
   data: object
-  channel: ('whatsapp' | 'telegram' | 'web' | 'email' | 'webhook')[]
+  channel: 'web' | 'whatsapp' | 'telegram',
   fillId?: string
 }
 

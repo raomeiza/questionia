@@ -32,6 +32,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "title": {"dataType":"string"},
+            "description": {"dataType":"string"},
             "url": {"dataType":"string"},
             "inputs": {"dataType":"array","array":{"dataType":"refObject","ref":"Input"},"required":true},
             "btnTxt": {"dataType":"string"},
@@ -52,7 +53,7 @@ const models: TsoaRoute.Models = {
             "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "activationDate": {"dataType":"string"},
             "expiryDate": {"dataType":"string"},
-            "social": {"dataType":"nestedObjectLiteral","nestedProperties":{"telegram":{"dataType":"boolean","required":true},"whatsapp":{"dataType":"boolean","required":true}}},
+            "social": {"dataType":"array","array":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]},{"dataType":"enum","enums":["web"]}]}},
             "webHooks": {"dataType":"array","array":{"dataType":"string"}},
             "collectionGroup": {"dataType":"string"},
             "userId": {"dataType":"string","required":true},
@@ -74,7 +75,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "formId": {"dataType":"string","required":true},
             "data": {"dataType":"object","required":true},
-            "channel": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]},{"dataType":"enum","enums":["web"]}],"required":true},
+            "channel": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["web"]},{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]}],"required":true},
             "fillId": {"dataType":"string"},
         },
         "additionalProperties": false,

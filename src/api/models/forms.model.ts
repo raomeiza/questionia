@@ -8,6 +8,7 @@ const Form = model('Form', new Schema({
     },
     url: { type: String, maxlength:250 },
     btnTxt: { type: String, maxlength: 15 },
+    description: { type: String, maxlength: 500 },
     inputs: [{
       name: { type: String, required:true, maxlength: 50 },
       label: { type: String, required: true, maxlength:150 },
@@ -37,10 +38,7 @@ const Form = model('Form', new Schema({
   },
   sx: { type: Object, default:null, required: false },
   webHooks: [String],
-  socials: {
-    whatsapp: {type: Boolean, default: false},
-    telegram: {type: Boolean, default: false},
-  },
+  channels: {type: String, enum: ['whatsapp', 'telegram', 'web'], default: 'web', required: false},
   createdAt: { type: Date, default: Date.now },
   responseCount: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
@@ -49,7 +47,11 @@ const Form = model('Form', new Schema({
   deactivatioDate:{type: Date},
   deactivationReason:{type:String},
   updatedAt: { type: Date, default: Date.now },
-  userId:{type: mongoose.Types.ObjectId, required: true}
+  userId:{type: mongoose.Types.ObjectId, required: true},
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 
 }), 'form');
 

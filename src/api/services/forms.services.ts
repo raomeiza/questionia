@@ -122,7 +122,7 @@ export class FormService implements IFormService {
           $group: {
             _id: "$_id",
             title: { $first: "$header" }, // keep the header field
-            socials: { $first: "$socials" }, // keep the socials field
+            channels: { $first: "$channels" }, // keep the channels field
             "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
             "Group": { $first: { $ifNull: ["$collectionGroup", "none"] } }, // keep the group field
             "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
@@ -174,7 +174,7 @@ export class FormService implements IFormService {
             // project the fields to be returned
             _id: 1,
             title: 1,
-            socials: 1,
+            channels: 1,
             "Activation Date": 1,
             "Group": 1,
             "Last Updated": 1,
@@ -201,7 +201,8 @@ export class FormService implements IFormService {
       const form = await this.model.findById(resource.formId).select('isActive isPublic').lean();
       if (form) {
         // @ts-ignore
-        if (!form.isActive || !form.isPublic) {
+        // if (!form.isActive || !form.isPublic) {  // we will come to public and private forms later
+        if(!form.isActive) {
          
           throw({message: 'form is not active', status: 400})
         }

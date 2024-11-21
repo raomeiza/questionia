@@ -83,6 +83,9 @@
 					"title": {
 						"type": "string"
 					},
+					"description": {
+						"type": "string"
+					},
 					"url": {
 						"type": "string"
 					},
@@ -137,19 +140,15 @@
 						"type": "string"
 					},
 					"social": {
-						"properties": {
-							"telegram": {
-								"type": "boolean"
-							},
-							"whatsapp": {
-								"type": "boolean"
-							}
+						"items": {
+							"type": "string",
+							"enum": [
+								"whatsapp",
+								"telegram",
+								"web"
+							]
 						},
-						"required": [
-							"telegram",
-							"whatsapp"
-						],
-						"type": "object"
+						"type": "array"
 					},
 					"webHooks": {
 						"items": {
@@ -205,9 +204,9 @@
 					"channel": {
 						"type": "string",
 						"enum": [
+							"web",
 							"whatsapp",
-							"telegram",
-							"web"
+							"telegram"
 						]
 					},
 					"fillId": {

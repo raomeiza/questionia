@@ -162,7 +162,6 @@ export class formController extends Controller {
     @Body() payload: IResponse,
     @Path('formId') formId: string,
   ): Promise<any> {
-    console.log('payload', payload)
     try {
       //await validations.signup.validateAsync(payload)
       // await decodeTokenMiddleware(request)
@@ -176,6 +175,7 @@ export class formController extends Controller {
       // send the user a verification email
       sendSuccess(201, { success: true, data: response }, /* set the jwt  { 'x-auth-token': jwt }*/)
     } catch (err: any) {
+      console.log('error', err)
       return await handleErrorResponse(sendError, err)
     }
   }
