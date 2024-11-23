@@ -22,3 +22,4 @@ export const UPLOAD_DIR = path.join(PUBLIC_DIR, 'static', 'uploads');
 export const FRONTEND_URL = `${process.env.BASE_URL}/app`;
 export const FRONT_END_PATH = path.join(BASE_DIR, 'public', 'app');
 export const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "blesseth.omeiza@gmail.com"
