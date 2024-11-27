@@ -3,7 +3,7 @@ import path from 'path';
 require('dotenv').config();
 // use the port query to configure the platform dependent env configs
 // lastly set the port
-export const PORT = process.env.PORT ? process.env.PORT : 5002;
+export const PORT = process.env.NODE_ENV === "production" ? process.env.PORT ? process.env.PORT : 443 : 5002;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 export const DB_NAME = process.env.DB_NAME || 'questionia';
 export const DATABASE_URL = process.env.DATABASE_URL

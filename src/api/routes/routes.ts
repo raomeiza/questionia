@@ -20,7 +20,7 @@ const models: TsoaRoute.Models = {
             "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["email"]},{"dataType":"enum","enums":["password"]},{"dataType":"enum","enums":["text"]},{"dataType":"enum","enums":["mobile"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["time"]},{"dataType":"enum","enums":["date"]},{"dataType":"enum","enums":["datetime"]},{"dataType":"enum","enums":["radio"]},{"dataType":"enum","enums":["select"]},{"dataType":"enum","enums":["file"]},{"dataType":"enum","enums":["button"]},{"dataType":"enum","enums":["radiogroup"]},{"dataType":"enum","enums":["autocomplete"]},{"dataType":"enum","enums":["emailOrMobile"]},{"dataType":"enum","enums":["checkbox"]},{"dataType":"enum","enums":["textarea"]},{"dataType":"enum","enums":["number"]},{"dataType":"enum","enums":["switch"]},{"dataType":"enum","enums":["slider"]},{"dataType":"enum","enums":["rating"]},{"dataType":"enum","enums":["color"]},{"dataType":"enum","enums":["submit"]},{"dataType":"enum","enums":["reset"]},{"dataType":"enum","enums":["buttonGroup"]},{"dataType":"enum","enums":["signature"]},{"dataType":"enum","enums":["dropzone"]}],"required":true},
             "helperText": {"dataType":"string"},
             "Variant": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["outline"]},{"dataType":"enum","enums":["standard"]},{"dataType":"enum","enums":["contained"]},{"dataType":"enum","enums":["text"]}]},
-            "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
+            "sx": {"dataType":"union","subSchemas":[{"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},{"dataType":"enum","enums":[null]}]},
             "fullWidth": {"dataType":"boolean"},
             "validation": {"dataType":"any"},
             "onClick": {"dataType":"string"},
@@ -407,6 +407,65 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.countResponse.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/form/:formId/active-status',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.activate)),
+
+            function formController_activate(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"newState":{"dataType":"boolean","required":true}}},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    token: {"in":"header","name":"Authorization","dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.activate.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/form/:formId/public-status',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.makePublic)),
+
+            function formController_makePublic(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"newState":{"dataType":"boolean","required":true}}},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.makePublic.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

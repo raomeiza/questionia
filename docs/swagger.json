@@ -60,7 +60,8 @@
 					"sx": {
 						"properties": {},
 						"additionalProperties": {},
-						"type": "object"
+						"type": "object",
+						"nullable": true
 					},
 					"fullWidth": {
 						"type": "boolean"
@@ -363,7 +364,13 @@
 				"additionalProperties": false
 			}
 		},
-		"securitySchemes": {}
+		"securitySchemes": {
+			"Bearer": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "header"
+			}
+		}
 	},
 	"info": {
 		"title": "questionia",
@@ -1752,6 +1759,364 @@
 						}
 					}
 				]
+			}
+		},
+		"/form/{formId}/active-status": {
+			"patch": {
+				"operationId": "Activate",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to change form state"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "header",
+						"name": "Authorization",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"newState": {
+										"type": "boolean"
+									}
+								},
+								"required": [
+									"newState"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/form/{formId}/public-status": {
+			"patch": {
+				"operationId": "MakePublic",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to change form state"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"newState": {
+										"type": "boolean"
+									}
+								},
+								"required": [
+									"newState"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/user/signup": {

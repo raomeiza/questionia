@@ -127,6 +127,7 @@ export class FormService implements IFormService {
             "Group": { $first: { $ifNull: ["$collectionGroup", "none"] } }, // keep the group field
             "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
             "Expiry Date": { $first: "$expiryDate" }, // keep the expiryDate field
+            isActive: { $first: "$isActive" }, // keep the isActive field
             type: { $first: "$type" }, // keep the type field
             views: { $first: "$views" }, // keep the views field
             webhooks: { $first: "$webHooks" }, // keep the webhooks field
@@ -180,6 +181,7 @@ export class FormService implements IFormService {
             "Last Updated": 1,
             "Expiry Date": 1,
             type: 1,
+            isActive: 1,
             views: 1,
             webhooks: 1,
             responses: 1,
@@ -287,6 +289,34 @@ return await this.responseModel.aggregate([
     } catch (err: any) {
       throw {
         message: err.message || "Failed to fetch responses",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async changeActivationStatus({ formId, userId, newState }: { formId: string, userId: string, newState: boolean }): Promise<any> {
+    try {
+      const form = await this.model.findOneAndUpdate({ _id: formId, userId }, { isActive: newState }, { new: true });
+      return form;
+    }
+    catch (err: any) {
+      throw {
+        message: err.message || "Failed to change the activation status",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async changePublicStatus({ formId, userId, newState }: { formId: string, userId: string, newState: boolean }): Promise<any> {
+    try {
+      const form = await this.model.findOneAndUpdate({ _id: formId, userId }, { isPublic: newState }, { new: true });
+      return form;
+    }
+    catch (err: any) {
+      throw {
+        message: err.message || "Failed to change the activation status",
         error: err,
         status: err.status || err.errorStatus || 404,
       };

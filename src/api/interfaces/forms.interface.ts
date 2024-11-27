@@ -10,7 +10,7 @@ export interface Input {
   // setFormError?: boolean
   // setFormInputValueOrError?: string
   Variant?: 'outline' | 'standard' | 'contained' | 'text';
-  sx?: { [x: string]: any };
+  sx?: { [x: string]: any } |null;
   fullWidth?: boolean
   validation?: any
   onClick?: string;

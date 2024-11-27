@@ -2,7 +2,7 @@ import { handleErrorResponse, handleSuccessResponse } from '../utils/response-ha
 import formsServices from '../services/forms.services'
 // import * as validations from '../validations/fom.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
-import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch } from 'tsoa'
+import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch, Header } from 'tsoa'
 import IFormService, { ICreate, IDelete, IResponse, IGet, IGetAll } from '../interfaces/forms.interface'
 import { signToken } from '../utils/tokenizer'
 
@@ -257,6 +257,63 @@ export class formController extends Controller {
       const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       // send the user a verification email
       sendSuccess(200, { success: true, data: count }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for changing the active status of a form
+  @Tags('Forms')
+  @Patch('/:formId/active-status')
+  @Response(200, 'Form state changed successfully')
+  @Response(409, 'Failed to change form state')
+  @Response(401, 'Access denied')
+  public async activate(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Body() payload: { newState: boolean },
+    @Request() request: any,  // so that use can test the route with swagger
+    @Header('Authorization') token?: string
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+      // create the user
+      const form = await formsServices.changeActivationStatus({ formId, userId: request.decodedUser.userId, newState: payload.newState })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: form }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for changing the public status of a form
+  @Tags('Forms')
+  @Patch('/:formId/public-status')
+  @Response(200, 'Form state changed successfully')
+  @Response(409, 'Failed to change form state')
+  @Response(401, 'Access denied')
+  public async makePublic(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Body() payload: { newState: boolean },
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+      // create the user
+      const form = await formsServices.changePublicStatus({ formId, userId: request.decodedUser.userId, newState: payload.newState })
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: form }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

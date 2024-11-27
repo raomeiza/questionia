@@ -6,7 +6,19 @@
   ],
   "spec": {
     "outputDirectory": "docs",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "security": [
+      {
+        "Bearer": []
+      }
+    ]
   },
   "routes": {
     "routesDir": "src/api/routes"
