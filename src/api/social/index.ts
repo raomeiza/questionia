@@ -1,15 +1,15 @@
 import telegram from "node-telegram-bot-api";
 import formBridge from "./form-bridge";
 import { ResponseModel } from "../models/forms.model";
-let secretKey = process.env.TELEGRAM_BOT_TOKEN;
+import { TELEGRAM_BOT_TOKEN } from "../../config";
 
-if (!secretKey) {
-  throw new Error("TELEGRAM_SECRET_KEY is not defined");
+if (!TELEGRAM_BOT_TOKEN) {
+  throw new Error("TELEGRAM_BOT_TOKEN is not defined");
 }
 //create a map for storing chat sessions
 const chat = new Map();
 
-export const telegramInstance = new telegram(secretKey, { polling: true });
+export const telegramInstance = new telegram(TELEGRAM_BOT_TOKEN, { polling: true });
 // telegramInstance.setWebHook("https://telegram-bot-omeiza.herokuapp.com/webhook");
 
 // telegramInstance.on('inline_query', async (ctx) => {

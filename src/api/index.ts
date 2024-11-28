@@ -1,4 +1,6 @@
 // Core Dependencies
+import { Application, NextFunction } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import cors from 'cors';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
@@ -17,10 +19,15 @@ const swaggerDocument = require('../../docs/swagger.json');
 import paystack from './paystack/index';
 import telegramInstance from './social/telegram'
 
-// const intervals = [ 3, 5,  7, 10];
-// let pingInterval = setInterval(() => {
-//   telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-// }, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
+const intervals = [ 3, 5,  7, 10];
+let pingInterval = setInterval(async() => {
+  try {
+    await telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
+  } catch (error) {
+    console.log(error)
+  }
+  // telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
+}, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
 
 // const resetInterval = () => {
 //   clearInterval(pingInterval);
@@ -31,7 +38,7 @@ import telegramInstance from './social/telegram'
 //   }, 1000 * 60 * newInterval);
 // }
 
-console.log(BASE_URL)
+// console.log(BASE_URL)
 // Instance of express
 const app: express.Application = express();
 
@@ -65,8 +72,8 @@ app.use(cors({
   credentials: true, methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', preflightContinue: false, origin: '*',
 }));
 
-app.use('/webhook/telegramdev', (req, res, next) => {
-  console.log(req.body)
+app.use('/webhook/telegram', (req, res, next) => {
+  // console.log(req.body)
   res.status(200).end();
 })
 
@@ -120,7 +127,8 @@ app.use('/', (req, res, next) => {
 //this is not exposed in the api docs for security reasons
 // and is mainly implemented for nextjs users whose session expires in about a day
 // so that the can periodically revalidate their token as far as they are sure the user is still logged in
-app.post('/revalidate', async (req, res) => {
+
+app.post('/revalidate', async (req: Request, res: any) => {
   const token = req.headers['x-auth-token'];
   if (!token) {
     return res.status(401).json({
@@ -138,7 +146,7 @@ app.post('/revalidate', async (req, res) => {
 
 // paystack webhook
 app.post('/paystack/webhook', async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   res.status(200).json({
     message: 'success',
     status: 200,
@@ -152,7 +160,9 @@ if (NODE_ENV === 'DEVELOPMENT') {
   app.use(morgan('tiny'));
 }
 
-app.use(expressErrorHandlerMiddleware);
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  expressErrorHandlerMiddleware(err, req, res, next);
+});
 // Routers
 
 

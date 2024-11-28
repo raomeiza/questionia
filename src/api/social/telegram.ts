@@ -1,15 +1,15 @@
-                                                                                                                                                                                                import telegram from "node-telegram-bot-api";
+import telegram from "node-telegram-bot-api";
 import formBridge from "./form-bridge";
 import { ResponseModel } from "../models/forms.model";
-let secretKey = process.env.TELEGRAM_BOT_TOKEN;
+import { TELEGRAM_BOT_TOKEN } from "../../config";
 
-if (!secretKey) {
-  throw new Error("TELEGRAM_SECRET_KEY is not defined");
+if (!TELEGRAM_BOT_TOKEN) {
+  throw new Error("TELEGRAM_BOT_TOKEN is not defined");
 }
 //create a map for storing chat sessions
 const chat = new Map();
 
-export const telegramInstance = new telegram(secretKey, { polling: true });
+export const telegramInstance = new telegram(TELEGRAM_BOT_TOKEN, { polling: true });
 // telegramInstance.setWebHook("https://telegram-bot-omeiza.herokuapp.com/webhook");
 
 // telegramInstance.on('inline_query', async (ctx) => {
@@ -18,6 +18,11 @@ export const telegramInstance = new telegram(secretKey, { polling: true });
 //   // const results = await form.get({formId: query})
 //   telegramInstance.sendMessage(ctx.from.id, JSON.stringify(results))
 // })
+
+// once bot connects to telegram, send a message to the admin
+telegramInstance.on("polling_error", (err) => console.log(err));
+
+//
 
 telegramInstance.on("chosen_inline_result", async (ctx) => {
   const { result_id } = ctx;
@@ -392,7 +397,7 @@ telegramInstance.on("message", async (ctx) => {
   //   //check if id is a valid mongo id
   //   if(!formId || formId.length !== 24 || !formId.match(/^[0-9a-fA-F]{24}$/)) {
   //     //@ts-ignore
-  //     telegramInstance.sendMessage(ctx?.from?.id, 'Please provide a valid form id./n/nThe command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b')
+  //     telegramInstance.sendMessage(ctx?.from?.id, 'Please provide a valid form id\\. The command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b')
   //     return
   //   }
   //   // send an inline keyboard asking if the user really wants to start fillling
@@ -415,7 +420,7 @@ telegramInstance.on("message", async (ctx) => {
       telegramInstance.sendMessage(
         //@ts-ignore
         ctx?.from?.id,
-        "Please provide a valid form id./n/nThe command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b",
+        "Please provide a valid form id\\. The command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b",
         { parse_mode: "MarkdownV2"}
       );
       return;
@@ -455,7 +460,7 @@ telegramInstance.onText(/\/start/, async (ctx) => {
       telegramInstance.sendMessage(
         //@ts-ignore
         ctx?.from?.id,
-        "Please provide a valid form id./n/nThe command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b",
+        "Please provide a valid form id\\. The command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b",
         { parse_mode: "MarkdownV2"}
       );
       return;
@@ -487,7 +492,7 @@ telegramInstance.onText(/\/start/, async (ctx) => {
       telegramInstance.sendMessage(
         //@ts-ignore
         ctx?.from?.id,
-        "Please provide a valid form id./n/nThe command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b"
+        "Please provide a valid form id\\. The command should be in this format: /cancel/5f9b3b3b3b3b3b3b3b3b3b3b"
       );
       return;
     }

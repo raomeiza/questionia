@@ -18,7 +18,7 @@ telegramInstance.on("webhook_error", (error: any) => {
 
 // webhook
 router.post("/", async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     const { message } = req.body;
     const response = await telegramInstance.sendMessage(
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
   }
 });
 router.get("/", async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     const { message } = req.body;
     const response = await telegramInstance.sendMessage(
