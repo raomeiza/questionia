@@ -125,6 +125,7 @@ class FormBridge {
                 },
               ];
               input.telegram_is_button = true // for select inputs, the user does not need to confirm the input before it is sent
+              input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
             }
             // else if(
             //   input.type === "date" ||
