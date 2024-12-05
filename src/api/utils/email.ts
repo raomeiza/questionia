@@ -55,7 +55,7 @@ const emailTemplate = (emailSubject: string, emailContent: string) => {
 // On every server start, we will send an email to the admin to notify them that the server has started
 // this is to ensure that the admin is aware of the server status
 export const  msg = {
-    from: 'dev@questionia.com.ng',
+    from: 'dev@questioniar.com.ng',
     to: 'blesseth.omeiza@gmail.com',
     subject: 'Server Started',
     html: emailTemplate(`Server started at ${new Date().toLocaleString()}`, `The server has started successfully. You can now access the server at ${BASE_URL}`),
@@ -75,7 +75,7 @@ mg.messages.create('service.authentify.tech', msg).then((body) => {
 // and format them to both html and text emails and send to the receiver. and should be an async function
 const sendEmail = async (text: string, subject: string, email: string) => {
     const msg = {
-        from: 'service@questionia.com.ng',
+        from: 'service@questioniar.com.ng',
         to: email,
         subject: subject,
         html: emailTemplate(subject, text),

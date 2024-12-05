@@ -1,5 +1,5 @@
 {
-  "name": "questionia",
+  "name": "questioniar",
   "version": "1.0.0",
   "description": "a basic express app writen in typescript",
   "node": ">= 19.0.0",

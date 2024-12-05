@@ -5,7 +5,7 @@ require('dotenv').config();
 // lastly set the port
 export const PORT = process.env.NODE_ENV === "production" ? process.env.PORT ? process.env.PORT : 443 : 5002;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
-export const DB_NAME = process.env.DB_NAME || 'questionia';
+export const DB_NAME = process.env.DB_NAME || 'questioniar';
 export const DATABASE_URL = process.env.DATABASE_URL
   //@ts-ignore
   ? encodeURI(process.env.DATABASE_URL) : 'mongodb://127.0.0.1:27017';

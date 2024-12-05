@@ -24,8 +24,8 @@ class Mailer {
     if (options) {
       this.transporter = nodemailer.createTransport(options);
     } else {
-      const { EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, SMTP_SECURE, QUESTIONIA_GMAIL_USERNAME, QUESTIONIA_GMAIL_PASSWORD } = process.env;
-      if (!EMAIL_SERVER_HOST || !EMAIL_SERVER_PORT || !QUESTIONIA_GMAIL_USERNAME || !QUESTIONIA_GMAIL_PASSWORD) {
+      const { EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, SMTP_SECURE, QUESTIONIAR_GMAIL_USERNAME, QUESTIONIAR_GMAIL_PASSWORD } = process.env;
+      if (!EMAIL_SERVER_HOST || !EMAIL_SERVER_PORT || !QUESTIONIAR_GMAIL_USERNAME || !QUESTIONIAR_GMAIL_PASSWORD) {
         throw new Error('Email server details are not defined');
       }
       this.transporter = nodemailer.createTransport({
@@ -33,8 +33,8 @@ class Mailer {
         port: Number(EMAIL_SERVER_PORT),
         secure: SMTP_SECURE === 'true',
         auth: {
-          user: QUESTIONIA_GMAIL_USERNAME,
-          pass: QUESTIONIA_GMAIL_PASSWORD,
+          user: QUESTIONIAR_GMAIL_USERNAME,
+          pass: QUESTIONIAR_GMAIL_PASSWORD,
         },
       });
     }

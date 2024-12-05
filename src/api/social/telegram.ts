@@ -579,5 +579,5 @@ const saveForm = async (replies: any, formId: String, userId: string) => {
   chat.delete(userId);
 };
 
-let telegramHookUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setWebhook?url=https://www.questionia.com.ng/webhook/telegram`
+let telegramHookUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setWebhook?url=https://www.questioniar.com.ng/webhook/telegram`
 export default telegramInstance;

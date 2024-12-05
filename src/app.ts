@@ -32,7 +32,7 @@ process.on('uncaughtException', (err) => {
   // sendSms('+2347044124767', `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`);
   sendMail(
     `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`,
-    'Questionia shutting down due to uncaught exception',
+    'Questioniar shutting down due to uncaught exception',
     'blesseth.omeiza@gmail.com',
   );
   logger.error(err);
@@ -46,7 +46,7 @@ process.on('unhandledRejection', (err:any) => {
   // sendSms('+2347044124767', `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`);
   sendMail(
     `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`,
-    'Questionia shutting down due to unhandled promise rejection',
+    'Questioniar shutting down due to unhandled promise rejection',
     'blesseth.omeiza@gmail.com',
   );
   logger.error(err);

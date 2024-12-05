@@ -41,7 +41,7 @@ const sendMail = async (email:string, subject:string, message:any) => {
   try {
     const data = {
       to: `${email}`,
-      from: `QUESTIONIA <${SENDGRID_EMAIL_FROM}>`,
+      from: `QUESTIONIAR <${SENDGRID_EMAIL_FROM}>`,
       subject,
       html: message,
     };
