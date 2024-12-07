@@ -132,7 +132,8 @@ class FormBridge {
             else if (
               input.type === "date" ||
               input.type === "time" ||
-              input.type === "datetime-local"
+              input.type === "datetime-local" ||
+              input.type === "password"
             ) {
               input.telegram = [
                 this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),

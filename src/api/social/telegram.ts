@@ -291,7 +291,7 @@ export const handleResponse = async (ctx: any, type: string) => {
     const { question } = prevMessage;
 
     // if the input is not confirmed, send the user a query asking if the input is correct or not
-    if (type === "message" && !prevMessage.confirmed) {
+    if (type === "message") {
       if (!prevMessage.telegram_button_options) {
         let response = ctx.text;
         if (!response) {
@@ -328,7 +328,8 @@ export const handleResponse = async (ctx: any, type: string) => {
           }
         );
         return;
-      } else {
+      }
+       else {
         if (!prevMessage.telegram_button_options.includes(ctx.text)) {
           telegramInstance.sendMessage(
             userId,
@@ -381,7 +382,7 @@ export const handleResponse = async (ctx: any, type: string) => {
       replies.set(messageId, {
         inputName: input.name,
         question: input.label,
-        confirmed: input.telegram_need_confirmation,
+        confirmed: !input.telegram_need_confirmation,
         ...(input.telegram_button_options
           ? { telegram_button_options: input.telegram_button_options }
           : {}),
@@ -401,6 +402,7 @@ export const handleResponse = async (ctx: any, type: string) => {
       userId,
       "An error occured while processing your response. Please try again or contact the form owner"
     );
+    chat.delete(chatId);
   }
 };
 
