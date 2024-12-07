@@ -32,7 +32,9 @@ class FormBridge {
 
   async fetchForm(
     formId: string,
-    check: boolean = true
+    check: boolean = true,
+    chatId?: string,
+    userId?: string
   ): Promise<boolean | IForm> {
     let formIsAvailable = false;
     if (this.formCache.has(formId)) {
@@ -65,7 +67,7 @@ class FormBridge {
                     force_reply: true,
                   },
                 },
-                
+
               ];
               input.telegram_need_confirmation = true // for text inputs, the user must confirm the input before it is sent
             } else if (
@@ -88,16 +90,16 @@ class FormBridge {
                     }),
                   },
                 },
-            ];
-            input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
-            } else if(
+              ];
+              input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
+            } else if (
               input.type === "select" ||
               input.type === "checkbox" ||
               input.type === "autocomplete"
-            ){
+            ) {
               input.telegram_button_options = []
               input.telegram_is_button_input = true
-              
+
               // create a reply keyboard for options of the input
               input.telegram = [
                 this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
@@ -127,30 +129,32 @@ class FormBridge {
               input.telegram_is_button = true // for select inputs, the user does not need to confirm the input before it is sent
               input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
             }
-            // else if(
-            //   input.type === "date" ||
-            //   input.type === "time" ||
-            //   input.type === "datetime-local"
-            // ){
-            //   input.telegram = [
-            //     this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
-            //     {
-            //       parse_mode: 'MarkdownV2',
-            //       reply_markup: {
-            //         inline_keyboard: [
-            //           [
-            //             {
-            //               text: "Select date",
-            //               callback_data: formId,
-            //             },
-            //           ],
-            //         ],
-            //       },
-            //     },
-            //   ];
-            //   input.telegram_need_confirmation = false // for select inputs, the user does not need to confirm the input before it is sent
-            // }
-            
+            else if (
+              input.type === "date" ||
+              input.type === "time" ||
+              input.type === "datetime-local"
+            ) {
+              input.telegram = [
+                this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
+                {
+                  parse_mode: 'MarkdownV2',
+                  reply_markup: {
+                    inline_keyboard: [
+                      [
+                        {
+                          text: input.label || "Select date",
+                          web_app: {
+                            url: `https://tx9l6dbq-3000.usw3.devtunnels.ms/mini-app/${input.type}?formId=${formId}&inputId=${input._id}&chatId=${chatId}&userId=${userId}&label=${input.label}`,
+                          },
+                        },
+                      ],
+                    ],
+                  },
+                },
+              ];
+              input.telegram_need_confirmation = false; // for select inputs, the user does not need to confirm the input before it is sent
+            }
+
             input.nextInput =
               form.form.inputs.length > index + 1
                 ? form.form.inputs[index + 1]._id.toString()
@@ -166,13 +170,13 @@ class FormBridge {
     return check
       ? formIsAvailable
       : formIsAvailable
-      ? ((this.formCache.get(formId) || false) as IForm)
-      : false;
+        ? ((this.formCache.get(formId) || false) as IForm)
+        : false;
   }
 
-  async telegram(formId: string, inputId: string): Promise<ITelegramInput> {
+  async telegram(formId: string, inputId: string, chatId: string, userTgId: string): Promise<any> {
     // Convert native web inputs to Telegram prompts
-    const form = await this.fetchForm(formId, false);
+    const form = await this.fetchForm(formId, false, chatId, userTgId);
     if (form && typeof form !== "boolean") {
       if (inputId === "0") {
         return form.form.inputs[0] as ITelegramInput;
@@ -186,12 +190,12 @@ class FormBridge {
 
   // create a method for escaping markdown characters
   escapeMarkdown(text: string): string {
-    const characters = ['[', ']', '(', ')', '~',  '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    const characters = ['[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
     let escapedText = text
     characters.forEach(character => {
       const regex = new RegExp('\\' + character, 'g');
       escapedText = escapedText.replace(regex, `\\${character}`);
-  });
+    });
     return escapedText
   }
 

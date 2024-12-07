@@ -18,16 +18,18 @@ import { refreshToken } from './utils/tokenizer';
 const swaggerDocument = require('../../docs/swagger.json');
 import paystack from './paystack/index';
 import telegramInstance from './social/telegram'
+import miniAppRouter from './controllers/mini-app';
 
+telegramInstance
 const intervals = [ 3, 5,  7, 10];
-let pingInterval = setInterval(async() => {
-  try {
-    await telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-  } catch (error) {
-    console.log(error)
-  }
-  // telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-}, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
+// let pingInterval = setInterval(async() => {
+//   try {
+//     await telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
+//   } catch (error) {
+//     console.log(error)
+//   }
+//   // telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
+// }, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
 
 // const resetInterval = () => {
 //   clearInterval(pingInterval);
@@ -66,6 +68,8 @@ app.get('/ping', (req, res) => {
 //   resetInterval();
 //   next();
 // })
+
+app.use('/mini-app', miniAppRouter);
 
 app.use('/paystack', paystack);
 app.use(cors({

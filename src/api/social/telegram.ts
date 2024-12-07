@@ -34,7 +34,19 @@ telegramInstance.on("chosen_inline_result", async (ctx) => {
   telegramInstance.sendMessage(ctx.from.id, message);
 });
 
-const handleResponse = async (ctx: any, type: string) => {
+telegramInstance.on('web_app_data', async (msg) => {
+  console.log('web_app_data', msg)
+  const chatId = msg.chat.id;
+  //@ts-ignore
+  const data = msg.web_app_data.data; // The selected date
+
+  // Process the selected date
+  await telegramInstance.sendMessage(chatId, `You selected the date: ${data}`);
+  // Continue with your form processing logic
+});
+
+export const handleResponse = async (ctx: any, type: string) => {
+  
   const chatId = type === "message" ? ctx.chat?.id : ctx.from?.id;
   const userId = type === "message" ? ctx.from?.id : ctx.message.chat?.id;
   try {
@@ -67,7 +79,9 @@ const handleResponse = async (ctx: any, type: string) => {
         }
         const _input = await formBridge.telegram(
           _chatSession.formId,
-          _chatSession.nextInput
+          _chatSession.nextInput,
+          chatId,
+          userId
         );
         if (!_input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
@@ -78,7 +92,9 @@ const handleResponse = async (ctx: any, type: string) => {
           if (nextInputId) {
             const nextInput = await formBridge.telegram(
               _chatSession.formId,
-              nextInputId
+              nextInputId,
+              chatId,
+              userId
             );
             if (!nextInput) {
               finalizeForm(_chatSession.replies, _chatSession.formId, userId);
@@ -184,7 +200,9 @@ const handleResponse = async (ctx: any, type: string) => {
         // get the previous input
         const _input = await formBridge.telegram(
           _chatSession.formId,
-          confIinputId
+          confIinputId,
+          chatId,
+          userId
         );
         if (!_input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
@@ -234,7 +252,7 @@ const handleResponse = async (ctx: any, type: string) => {
       const formId = ctx.data;
       if (formId) {
         // get it from the form bridge
-        const input = await formBridge.telegram(formId, "0");
+        const input = await formBridge.telegram(formId, "0", chatId, userId);
         if (!input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
           return;
@@ -262,6 +280,7 @@ const handleResponse = async (ctx: any, type: string) => {
           });
         });
       }
+      // i will later have to get users chat context from telegram to see if they are filling a form
       //  else {
       //   telegramInstance.sendMessage(userId, "You are not filling a form");
       // }
@@ -272,7 +291,7 @@ const handleResponse = async (ctx: any, type: string) => {
     const { question } = prevMessage;
 
     // if the input is not confirmed, send the user a query asking if the input is correct or not
-    if (type === "message") {
+    if (type === "message" && !prevMessage.confirmed) {
       if (!prevMessage.telegram_button_options) {
         let response = ctx.text;
         if (!response) {
@@ -346,7 +365,7 @@ const handleResponse = async (ctx: any, type: string) => {
       return;
     }
     // get the next input
-    const input = await formBridge.telegram(formId, nextInput);
+    const input = await formBridge.telegram(formId, nextInput, chatId, userId);
     if (!input) {
       ctx.from &&
         telegramInstance.sendMessage(userId, "This form has no inputs");

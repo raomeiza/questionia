@@ -62,7 +62,9 @@ const handleResponse = async (ctx: any, type: string) => {
         }
         const _input = await formBridge.telegram(
           _chatSession.formId,
-          _chatSession.nextInput
+          _chatSession.nextInput,
+          chatId,
+          userId
         );
         if (!_input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
@@ -73,7 +75,9 @@ const handleResponse = async (ctx: any, type: string) => {
           if (nextInputId) {
             const nextInput = await formBridge.telegram(
               _chatSession.formId,
-              nextInputId
+              nextInputId,
+              chatId,
+              userId
             );
             if (!nextInput) {
               finalizeForm(_chatSession.replies, _chatSession.formId, userId);
@@ -179,7 +183,9 @@ const handleResponse = async (ctx: any, type: string) => {
         // get the previous input
         const _input = await formBridge.telegram(
           _chatSession.formId,
-          confIinputId
+          confIinputId,
+          chatId,
+          userId
         );
         if (!_input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
@@ -229,7 +235,7 @@ const handleResponse = async (ctx: any, type: string) => {
       const formId = ctx.data;
       if (formId) {
         // get it from the form bridge
-        const input = await formBridge.telegram(formId, "0");
+        const input = await formBridge.telegram(formId, "0", chatId, userId);
         if (!input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
           return;
@@ -341,7 +347,7 @@ const handleResponse = async (ctx: any, type: string) => {
       return;
     }
     // get the next input
-    const input = await formBridge.telegram(formId, nextInput);
+    const input = await formBridge.telegram(formId, nextInput, chatId, userId);
     if (!input) {
       ctx.from &&
         telegramInstance.sendMessage(userId, "This form has no inputs");
