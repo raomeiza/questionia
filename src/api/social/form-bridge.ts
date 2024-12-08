@@ -132,6 +132,7 @@ class FormBridge {
             else if (
               input.type === "date" ||
               input.type === "time" ||
+              input.type === "datetime" ||
               input.type === "datetime-local" ||
               input.type === "password"
             ) {
