@@ -241,7 +241,47 @@ export const handleResponse = async (ctx: any, type: string) => {
         );
         return;
       } else if (action === "continue") {
-        finalizeForm(chat.get(chatId).replies, confFormId, userId);
+        let nextInputId = chat.get(chatId).nextInput;
+        if (!nextInputId) {
+          finalizeForm(chat.get(chatId).replies, confFormId, userId);
+          return;
+        } else {
+          const nextInput = await formBridge.telegram(
+            confFormId,
+            nextInputId,
+            chatId,
+            userId
+          );
+          if (!nextInput) {
+            finalizeForm(chat.get(chatId).replies, confFormId, userId);
+            return;
+          }
+          // send the user the next input
+          //@ts-ignore
+          telegramInstance.sendMessage(userId, ...nextInput.telegram).then((res) => {
+            let messageId = res.message_id;
+            const session = chat.get(chatId);
+            const { formId, inputId, replies, prevMessageId } = session;
+            replies.set(messageId, {
+              inputName: nextInput.name,
+              question: nextInput.label,
+              confirmed: nextInput.telegram_need_confirmation,
+              ...(nextInput.telegram_button_options
+                ? { telegram_button_options: nextInput.telegram_button_options }
+                : {}),
+              answer: "",
+            });
+            chat.set(chatId, {
+              formId,
+              inputId: nextInput._id,
+              nextInput: nextInput.nextInput,
+              replies,
+              prevMessageId: messageId,
+              inputIds: [...session.inputIds, nextInput._id],
+            });
+          });
+        }
+        // finalizeForm(chat.get(chatId).replies, confFormId, userId);
         return;
       }
       // for cancel.cancel, do nothing. allow the flow to continue
@@ -466,7 +506,43 @@ telegramInstance.on("message", async (ctx) => {
       }
     );
     return;
-  } else {
+  }
+    // else if its a start command, check if the user is already filling a form
+    // if not, then start filling the form
+    else if (text?.startsWith("/start")) {
+    const formId = text.split("t ")[1];
+    //check if id is a valid mongo id
+    if (!formId || formId.length !== 24 || !formId.match(/^[0-9a-fA-F]{24}$/)) {
+      telegramInstance.sendMessage(
+        //@ts-ignore
+        ctx?.from?.id,
+        "Please provide a valid form id\\. The command should be in this format: /start/5f9b3b3b3b3b3b3b3b3b3b3b",
+        { parse_mode: "MarkdownV2" }
+      );
+      return;
+    }
+    let session = chat.get(ctx.chat?.id);
+    let userId = ctx.from?.id;
+    if (session) {
+      let message = formBridge.escapeMarkdown("You are already filling a form. Do you want to Stop it? If yes, your current progress will be lost and you will have to terminate that session first by clicking the 'Start New Session' button.\n\nIf however you want to continue, click the 'Continue Session' button bellow or just respond to the previous message");
+      const buttons = [
+        { text: "Continue Session", callback_data: `${formId}__continue` },
+        { text: "Start New Session", callback_data: `${formId}__cancel` },
+      ].map((button) => {
+        return [button];
+      });
+      //@ts-ignore
+      telegramInstance.sendMessage(userId, message, {
+        parse_mode: "MarkdownV2",
+        reply_markup: {
+          inline_keyboard: buttons,
+        },
+      });
+      
+      return;
+    }
+    }
+  else {
     handleResponse(ctx, "message");
   }
 });

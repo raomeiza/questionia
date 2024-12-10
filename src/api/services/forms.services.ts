@@ -121,6 +121,9 @@ export class FormService implements IFormService {
         {
           $group: {
             _id: "$_id",
+            description: { $first: "$form.description" }, // keep the description field
+            // get the background image from sx object
+            backgroundImage: { $first: "$sx.backgroundImage" },
             title: { $first: "$header" }, // keep the header field
             channels: { $first: "$channels" }, // keep the channels field
             "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
@@ -185,6 +188,8 @@ export class FormService implements IFormService {
             views: 1,
             webhooks: 1,
             responses: 1,
+            backgroundImage: 1,
+            description: 1,
           },
         }
       ]);
