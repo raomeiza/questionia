@@ -74,6 +74,7 @@ class FormBridge {
               input.type === "buttonGroup" ||
               input.type === "radio"
             ) {
+              input.telegram_button_options = []
               input.telegram = [
                 this.escapeMarkdown(`*${input.label}*\n\n${input.helperText || ""}`),
                 // create an inline keyboard for options of the input
@@ -81,10 +82,11 @@ class FormBridge {
                   parse_mode: 'MarkdownV2',
                   reply_markup: {
                     inline_keyboard: input.options.map((option: any) => {
+                      input.telegram_button_options.push(option.label)
                       return [
                         {
                           text: option.label,
-                          callback_data: formId,
+                          callback_data: option.label,
                         },
                       ];
                     }),

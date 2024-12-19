@@ -35,7 +35,6 @@ telegramInstance.on("chosen_inline_result", async (ctx) => {
 });
 
 telegramInstance.on('web_app_data', async (msg) => {
-  console.log('web_app_data', msg)
   const chatId = msg.chat.id;
   //@ts-ignore
   const data = msg.web_app_data.data; // The selected date
@@ -83,6 +82,7 @@ export const handleResponse = async (ctx: any, type: string) => {
           chatId,
           userId
         );
+
         if (!_input) {
           telegramInstance.sendMessage(userId, "This form has no inputs");
           return;
@@ -141,6 +141,7 @@ export const handleResponse = async (ctx: any, type: string) => {
             inputName: _input.name,
             question: _input.label,
             confirmed: _input.telegram_need_confirmation,
+            ...(_input.telegram_button_options ? { telegram_button_options: _input.telegram_button_options } : {}),
             answer: "",
           });
           chat.set(chatId, {
@@ -375,7 +376,34 @@ export const handleResponse = async (ctx: any, type: string) => {
             userId,
             "Please only select from the options provided"
           );
+          // lets get the previous message and send the user the message again
+          const inputId = chatSession.inputId;
+          const _chatSession = chat.get(chatId);
+        if (!_chatSession) {
+          telegramInstance.sendMessage(userId, "You are not filling a form");
           return;
+        }
+        // check if the user is filling a form
+        if (!_chatSession.formId || !_chatSession.inputId) {
+          telegramInstance.sendMessage(userId, "You are not filling a form");
+          return;
+        }
+
+        // get the previous input
+        const _input = await formBridge.telegram(
+          _chatSession.formId,
+          inputId,
+          chatId,
+          userId
+        );
+        if (!_input) {
+          telegramInstance.sendMessage(userId, "This form has no inputs");
+          return;
+        }
+        // send the user the first input
+        //@ts-ignore
+        telegramInstance.sendMessage(userId, ..._input.telegram);
+        return;
         }
       }
     }
