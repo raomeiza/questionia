@@ -7,6 +7,7 @@ import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Contr
 import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
 import { signToken, verifyToken, refreshToken } from '../utils/tokenizer'
 import sendEmail from '../utils/email'
+import { NEXT_APP_ID } from '../../config'
 
 @Route('user')
 @Tags('USERS')
@@ -18,7 +19,8 @@ export class userController extends Controller {
   public async signup(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object } >,
-    @Body() payload: ISignup
+    @Body() payload: ISignup,
+    @Request() request: any
   ): Promise<any> {
     try {
       if (payload.password !== payload.repeatPassword) {
@@ -136,13 +138,14 @@ export class userController extends Controller {
   public async login(
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
-    @Body() payload: ILogin
+    @Body() payload: ILogin,
+    @Header('x-app-id') appId: string,
   ): Promise<any> {
     try {
       await validations.login.validateAsync(payload)
       // verify the token
       const user = await userService.login(payload)
-      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false })
+      const jwt = await signToken({ userId: user.user.userId, email: user.user.email, is_admin: user.user.is_admin || false }, appId === NEXT_APP_ID ? '30d' : '24h')
       sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
