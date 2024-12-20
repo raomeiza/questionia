@@ -118,6 +118,7 @@ export const handleResponse = async (ctx: any, type: string) => {
                           nextInput.telegram_button_options,
                       }
                     : {}),
+                    ...(nextInput.telegram_is_button_input ? { telegram_is_button_input: nextInput.telegram_is_button_input } : {}),
                   answer: "",
                 });
                 chat.set(chatId, {
@@ -142,6 +143,7 @@ export const handleResponse = async (ctx: any, type: string) => {
             question: _input.label,
             confirmed: _input.telegram_need_confirmation,
             ...(_input.telegram_button_options ? { telegram_button_options: _input.telegram_button_options } : {}),
+            ...(_input.telegram_is_button_input ? { telegram_is_button_input: _input.telegram_is_button_input } : {}),
             answer: "",
           });
           chat.set(chatId, {
@@ -270,6 +272,7 @@ export const handleResponse = async (ctx: any, type: string) => {
               ...(nextInput.telegram_button_options
                 ? { telegram_button_options: nextInput.telegram_button_options }
                 : {}),
+              ...(nextInput.telegram_is_button_input ? { telegram_is_button_input: nextInput.telegram_is_button_input } : {}),
               answer: "",
             });
             chat.set(chatId, {
@@ -287,7 +290,6 @@ export const handleResponse = async (ctx: any, type: string) => {
       }
       // for cancel.cancel, do nothing. allow the flow to continue
     }
-
     const chatSession = chat.get(chatId);
     if (!chatSession) {
       const formId = ctx.data;
@@ -309,6 +311,7 @@ export const handleResponse = async (ctx: any, type: string) => {
             ...(input.telegram_button_options
               ? { telegram_button_options: input.telegram_button_options }
               : {}),
+            ...(input.telegram_is_button_input ? { telegram_is_button_input: input.telegram_is_button_input } : {}),
             answer: "",
           });
           chat.set(chatId, {
@@ -371,6 +374,7 @@ export const handleResponse = async (ctx: any, type: string) => {
         return;
       }
        else {
+        
         if (!prevMessage.telegram_button_options.includes(ctx.text)) {
           telegramInstance.sendMessage(
             userId,
@@ -404,6 +408,19 @@ export const handleResponse = async (ctx: any, type: string) => {
         //@ts-ignore
         telegramInstance.sendMessage(userId, ..._input.telegram);
         return;
+        }
+        // if prevmessage is a button input, remove the keyboard so that the user can't select multiple options
+        // we will come here later to address the issue of multiple options
+        if (prevMessage.telegram_is_button_input) {
+          try {
+            await telegramInstance.sendMessage(chatId, ".", {
+              reply_markup: {
+                remove_keyboard: true
+              }
+            });
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     }
@@ -454,6 +471,7 @@ export const handleResponse = async (ctx: any, type: string) => {
         ...(input.telegram_button_options
           ? { telegram_button_options: input.telegram_button_options }
           : {}),
+          ...(input.telegram_is_button_input ? { telegram_is_button_input: input.telegram_is_button_input } : {}),
         answer: "",
       });
       chat.set(chatId, {

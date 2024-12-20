@@ -27,6 +27,7 @@ const Form = model('Form', new Schema({
       multiple: { type: Boolean, default:false, required: false },
       MaxSelection: { type: Number, default: 1, required: false },
       minSelection: { type: Number, default: 1, required: false },
+      required: { type: Boolean, default: false, required: false },
     }],
     collectionGroup: { type: String, required: false   },
     onSubmitSuccess: { type: String, required: false   },
