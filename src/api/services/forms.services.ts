@@ -134,7 +134,11 @@ export class FormService implements IFormService {
             type: { $first: "$type" }, // keep the type field
             views: { $first: "$views" }, // keep the views field
             webhooks: { $first: "$webHooks" }, // keep the webhooks field
-            total: { $sum: 1 }, // count the total number of responses
+            total: {
+              $sum: {
+                $cond: [{ $ifNull: ["$responses", false] }, 1, 0],
+              },
+            }, // count the total number of responses
             telegram: {
               // count the responses from Telegram
               $sum: {
@@ -193,7 +197,7 @@ export class FormService implements IFormService {
           },
         }
       ]);
-    } catch (err: any) {
+      } catch (err: any) {
       throw {
         message: err.message || "Failed to fetch forms",
         error: err,
