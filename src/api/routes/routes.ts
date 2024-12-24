@@ -281,6 +281,9 @@ export function RegisterRoutes(app: Router) {
                     sendSuccess: {"in":"res","name":"201","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"401","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    token: {"in":"header","name":"Authorization","dataType":"string"},
+                    page: {"in":"query","name":"page","dataType":"double"},
+                    limit: {"in":"query","name":"limit","dataType":"double"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

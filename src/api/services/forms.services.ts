@@ -7,7 +7,6 @@ import IFormService, {
   IGetAll,
   IResponse,
 } from "../interfaces/forms.interface";
-import { Model, Mongoose } from "mongoose";
 import { Types } from 'mongoose';
 
 export class FormService implements IFormService {
@@ -99,105 +98,115 @@ export class FormService implements IFormService {
 
   async getAll(resource: IGetAll): Promise<any> {
     try {
-      const pageSize = resource.pageSize || 10; // number of documents per page
+      const pageSize = resource.limit || 10; // number of documents per page
       const currentPage = resource.page || 1; // current page number
-      const skip = (currentPage - 1) * pageSize; // number of documents to be skipped
+      const skip = resource.skip || (currentPage - 1) * pageSize; // number of documents to be skipped
+    
       return await this.model.aggregate([
         { $match: { userId: new Types.ObjectId(resource.userId) } }, // match the userId
         {
-          $lookup: {
-            from: "responses", // name of the responses collection
-            localField: "_id", // field in the forms collection
-            foreignField: "formId", // field in the responses collection
-            as: "responses", // output array
-          },
-        },
-        {
-          $unwind: {
-            path: "$responses",
-            preserveNullAndEmptyArrays: true, // keep the documents that have an empty responses array
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            description: { $first: "$form.description" }, // keep the description field
-            // get the background image from sx object
-            backgroundImage: { $first: "$sx.backgroundImage" },
-            title: { $first: "$header" }, // keep the header field
-            channels: { $first: "$channels" }, // keep the channels field
-            "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
-            "Group": { $first: { $ifNull: ["$collectionGroup", "none"] } }, // keep the group field
-            "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
-            "Expiry Date": { $first: "$expiryDate" }, // keep the expiryDate field
-            isActive: { $first: "$isActive" }, // keep the isActive field
-            type: { $first: "$type" }, // keep the type field
-            views: { $first: "$views" }, // keep the views field
-            webhooks: { $first: "$webHooks" }, // keep the webhooks field
-            total: {
-              $sum: {
-                $cond: [{ $ifNull: ["$responses", false] }, 1, 0],
+          $facet: {
+            totalForms: [
+              { $count: "count" } // count the total number of forms
+            ],
+            forms: [
+              {
+                $lookup: {
+                  from: "responses", // name of the responses collection
+                  localField: "_id", // field in the forms collection
+                  foreignField: "formId", // field in the responses collection
+                  as: "responses", // output array
+                },
               },
-            }, // count the total number of responses
-            telegram: {
-              // count the responses from Telegram
-              $sum: {
-                $cond: [{ $eq: ["$responses.channel", "telegram"] }, 1, 0],
+              {
+                $unwind: {
+                  path: "$responses",
+                  preserveNullAndEmptyArrays: true, // keep the documents that have an empty responses array
+                },
               },
-            },
-            whatsapp: {
-              // count the responses from WhatsApp
-              $sum: {
-                $cond: [{ $eq: ["$responses.channel", "whatsapp"] }, 1, 0],
+              {
+                $group: {
+                  _id: "$_id",
+                  description: { $first: "$form.description" }, // keep the description field
+                  // get the background image from sx object
+                  backgroundImage: { $first: "$sx.backgroundImage" },
+                  title: { $first: "$header" }, // keep the header field
+                  channels: { $first: "$channels" }, // keep the channels field
+                  "Activation Date": { $first: "$activationDate" }, // keep the activationDate field
+                  "Group": { $first: { $ifNull: ["$collectionGroup", "none"] } }, // keep the group field
+                  "Last Updated": { $first: "$updatedAt" }, // keep the updatedAt field
+                  "Expiry Date": { $first: "$expiryDate" }, // keep the expiryDate field
+                  isActive: { $first: "$isActive" }, // keep the isActive field
+                  type: { $first: "$type" }, // keep the type field
+                  views: { $first: "$views" }, // keep the views field
+                  webhooks: { $first: "$webHooks" }, // keep the webhooks field
+                  total: {
+                    $sum: {
+                      $cond: [{ $ifNull: ["$responses", false] }, 1, 0],
+                    },
+                  }, // count the total number of responses
+                  telegram: {
+                    // count the responses from Telegram
+                    $sum: {
+                      $cond: [{ $eq: ["$responses.channel", "telegram"] }, 1, 0],
+                    },
+                  },
+                  whatsapp: {
+                    // count the responses from WhatsApp
+                    $sum: {
+                      $cond: [{ $eq: ["$responses.channel", "whatsapp"] }, 1, 0],
+                    },
+                  },
+                  web: {
+                    // count the responses from the web
+                    $sum: {
+                      $cond: [{ $eq: ["$responses.channel", "web"] }, 1, 0],
+                    },
+                  },
+                },
               },
-            },
-            web: {
-              // count the responses from the web
-              $sum: {
-                $cond: [{ $eq: ["$responses.channel", "web"] }, 1, 0],
+              { $sort: { _id: -1 } }, // sort the forms by descending order
+              { $skip: skip }, // skip the documents that have already been fetched
+              { $limit: pageSize }, // limit the number of documents to be fetched
+              {
+                $addFields: {
+                  // add the responses object to the form document
+                  responses: {
+                    // create a responses object
+                    total: "$total", // add the total responses
+                    telegram: "$telegram", // add the telegram responses
+                    whatsapp: "$whatsapp", // add the whatsapp responses
+                    web: "$web", // add the web responses
+                  },
+                  "_qs": {
+                    _id: "$_id",
+                  }
+                },
               },
-            },
-          },
-        },
-        { $sort: { _id: -1 } }, // sort the forms by descending order
-        { $skip: skip }, // skip the documents that have already been fetched
-        { $limit: pageSize }, // limit the number of documents to be fetched
-        {
-          $addFields: {
-            // add the responses object to the form document
-            responses: {
-              // create a responses object
-              total: "$total", // add the total responses
-              telegram: "$telegram", // add the telegram responses
-              whatsapp: "$whatsapp", // add the whatsapp responses
-              web: "$web", // add the web responses
-            },
-            "_qs": {
-              _id: "$_id",
-            }
-          },
-        },
-        {
-          $project: {
-            // project the fields to be returned
-            _id: 1,
-            title: 1,
-            channels: 1,
-            "Activation Date": 1,
-            "Group": 1,
-            "Last Updated": 1,
-            "Expiry Date": 1,
-            type: 1,
-            isActive: 1,
-            views: 1,
-            webhooks: 1,
-            responses: 1,
-            backgroundImage: 1,
-            description: 1,
-          },
+              {
+                $project: {
+                  // project the fields to be returned
+                  _id: 1,
+                  title: 1,
+                  channels: 1,
+                  "Activation Date": 1,
+                  "Group": 1,
+                  "Last Updated": 1,
+                  "Expiry Date": 1,
+                  type: 1,
+                  isActive: 1,
+                  views: 1,
+                  webhooks: 1,
+                  responses: 1,
+                  backgroundImage: 1,
+                  description: 1,
+                },
+              }
+            ]
+          }
         }
       ]);
-      } catch (err: any) {
+    } catch (err: any) {
       throw {
         message: err.message || "Failed to fetch forms",
         error: err,

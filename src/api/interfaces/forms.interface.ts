@@ -56,7 +56,7 @@ export interface IResponse extends IGet {
   fillId?: string
 }
 
-export interface IGetAll { userId: string, page?: number, pageSize?: number, skip?: number }
+export interface IGetAll { userId: string, page?: number, limit?: number, skip?: number }
 
 export interface IDelete {
   formId: string

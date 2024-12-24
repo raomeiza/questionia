@@ -2,7 +2,7 @@ import { handleErrorResponse, handleSuccessResponse } from '../utils/response-ha
 import formsServices from '../services/forms.services'
 // import * as validations from '../validations/fom.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
-import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch, Header } from 'tsoa'
+import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch, Header, Queries } from 'tsoa'
 import IFormService, { ICreate, IDelete, IResponse, IGet, IGetAll } from '../interfaces/forms.interface'
 import { signToken } from '../utils/tokenizer'
 
@@ -126,14 +126,17 @@ export class formController extends Controller {
   /**
  * @description - first step to validating a pre registered account
  * */
-  @Get()
+  @Get("/")
   @Response(200, 'Forms fetched successfully')
   @Response(409, 'Failed to fetch forms')
   @Response(401, 'Access denied')
   public async getAll(
     @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
     @Res() sendError: TsoaResponse<400 | 401, { success: false, status: number, message: string, error: object }>,
-    @Request() request: any
+    @Request() request: any,
+    @Header('Authorization') token?: string,
+    @Query() page?: number,
+    @Query() limit?: number,
   ): Promise<any> {
     try {
       await decodeTokenMiddleware(request)
@@ -142,10 +145,10 @@ export class formController extends Controller {
       }
       //await validations.signup.validateAsync(payload)
       // create the user
-      const form = await formsServices.getAll({ userId: request.decodedUser.userId })
+      const form = await formsServices.getAll({ userId: request.decodedUser.userId, page, limit })
       //const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
       // send the user a verification email
-      sendSuccess(201, { success: true, data: form }, /* set the jwt */)
+      sendSuccess(201, { success: true, data: form[0] }, /* set the jwt */)
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
