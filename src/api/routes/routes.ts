@@ -27,6 +27,17 @@ const models: TsoaRoute.Models = {
         "additionalProperties": {"dataType":"any"},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IFormConfig": {
+        "dataType": "refObject",
+        "properties": {
+            "questionType": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["paged"]},{"dataType":"enum","enums":["single"]},{"dataType":"enum","enums":["default"]}]},
+            "welcomeScreen": {"dataType":"nestedObjectLiteral","nestedProperties":{"alwaysAvailable":{"dataType":"boolean"},"agreeToTermsTxt":{"dataType":"string"},"startBntTxt":{"dataType":"string"},"enableAgreeToTerms":{"dataType":"boolean"},"enabled":{"dataType":"boolean"}}},
+            "thankYouScreen": {"dataType":"nestedObjectLiteral","nestedProperties":{"btnTxt":{"dataType":"string"},"description":{"dataType":"string"},"title":{"dataType":"string"},"enabled":{"dataType":"boolean"}}},
+            "questionsConfig": {"dataType":"nestedObjectLiteral","nestedProperties":{"allowEdit":{"dataType":"boolean"},"allowPrevious":{"dataType":"boolean"}}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StandardForm": {
         "dataType": "refObject",
         "properties": {
@@ -40,6 +51,7 @@ const models: TsoaRoute.Models = {
             "onSubmitFailure": {"dataType":"string"},
             "beforeSubmit": {"dataType":"string"},
             "clearForm": {"dataType":"string"},
+            "config": {"ref":"IFormConfig"},
         },
         "additionalProperties": false,
     },
@@ -593,7 +605,7 @@ export function RegisterRoutes(app: Router) {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"409","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"object","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     payload: {"in":"body","name":"payload","required":true,"ref":"ILogin"},
-                    appId: {"in":"header","name":"x-app-id","required":true,"dataType":"string"},
+                    appId: {"in":"header","name":"x-app-id","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

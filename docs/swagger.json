@@ -79,6 +79,68 @@
 				"type": "object",
 				"additionalProperties": {}
 			},
+			"IFormConfig": {
+				"properties": {
+					"questionType": {
+						"type": "string",
+						"enum": [
+							"paged",
+							"single",
+							"default"
+						]
+					},
+					"welcomeScreen": {
+						"properties": {
+							"alwaysAvailable": {
+								"type": "boolean"
+							},
+							"agreeToTermsTxt": {
+								"type": "string"
+							},
+							"startBntTxt": {
+								"type": "string"
+							},
+							"enableAgreeToTerms": {
+								"type": "boolean"
+							},
+							"enabled": {
+								"type": "boolean"
+							}
+						},
+						"type": "object"
+					},
+					"thankYouScreen": {
+						"properties": {
+							"btnTxt": {
+								"type": "string"
+							},
+							"description": {
+								"type": "string"
+							},
+							"title": {
+								"type": "string"
+							},
+							"enabled": {
+								"type": "boolean"
+							}
+						},
+						"type": "object"
+					},
+					"questionsConfig": {
+						"properties": {
+							"allowEdit": {
+								"type": "boolean"
+							},
+							"allowPrevious": {
+								"type": "boolean"
+							}
+						},
+						"type": "object"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"StandardForm": {
 				"properties": {
 					"title": {
@@ -113,6 +175,9 @@
 					},
 					"clearForm": {
 						"type": "string"
+					},
+					"config": {
+						"$ref": "#/components/schemas/IFormConfig"
 					}
 				},
 				"required": [
@@ -2815,7 +2880,7 @@
 					{
 						"in": "header",
 						"name": "x-app-id",
-						"required": true,
+						"required": false,
 						"schema": {
 							"type": "string"
 						}

@@ -1,5 +1,26 @@
 import Form, { ResponseModel } from "../models/forms.model";
 
+export interface IFormConfig {
+  questionType?: 'paged' | 'single' | 'default'
+  welcomeScreen?: {
+    enabled?: boolean,
+    enableAgreeToTerms?: boolean,
+    startBntTxt?: string,
+    agreeToTermsTxt?: string,
+    alwaysAvailable?: boolean
+  },
+  thankYouScreen?: {
+    enabled?: boolean,
+    title?: string,
+    description?: string,
+    btnTxt?: string
+  },
+  questionsConfig?: {
+    allowPrevious?: boolean,
+    allowEdit?: boolean
+  }
+}
+
 export interface Input {
   name: string;
   label: string;
@@ -29,7 +50,7 @@ export interface StandardForm {
   onSubmitFailure?: string;
   beforeSubmit?: string;
   clearForm?: string
-
+  config?: IFormConfig
 }
 
 export interface ICreate {

@@ -139,7 +139,7 @@ export class userController extends Controller {
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any } >,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object } >,
     @Body() payload: ILogin,
-    @Header('x-app-id') appId: string,
+    @Header('x-app-id') appId?: string,
   ): Promise<any> {
     try {
       await validations.login.validateAsync(payload)
