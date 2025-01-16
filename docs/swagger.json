@@ -111,10 +111,122 @@
 					},
 					"thankYouScreen": {
 						"properties": {
-							"btnTxt": {
-								"type": "string"
+							"action": {
+								"anyOf": [
+									{
+										"properties": {
+											"copyCode": {
+												"type": "boolean"
+											},
+											"download": {
+												"type": "boolean"
+											},
+											"formField": {
+												"type": "string"
+											},
+											"source": {
+												"type": "string",
+												"enum": [
+													"responseId",
+													"formField"
+												]
+											},
+											"type": {
+												"type": "string",
+												"enum": [
+													"qrCode"
+												],
+												"nullable": false
+											}
+										},
+										"required": [
+											"copyCode",
+											"download",
+											"source",
+											"type"
+										],
+										"type": "object"
+									},
+									{
+										"properties": {
+											"delay": {
+												"type": "number",
+												"format": "double"
+											},
+											"redirect": {
+												"type": "boolean"
+											},
+											"url": {
+												"type": "string"
+											},
+											"linkText": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string",
+												"enum": [
+													"link"
+												],
+												"nullable": false
+											}
+										},
+										"required": [
+											"delay",
+											"redirect",
+											"url",
+											"linkText",
+											"type"
+										],
+										"type": "object"
+									},
+									{
+										"properties": {
+											"matchingFields": {
+												"items": {
+													"type": "string"
+												},
+												"type": "array"
+											},
+											"fields": {
+												"items": {
+													"type": "string"
+												},
+												"type": "array"
+											},
+											"passFieldValues": {
+												"type": "boolean"
+											},
+											"delay": {
+												"type": "number",
+												"format": "double"
+											},
+											"formId": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string",
+												"enum": [
+													"form"
+												],
+												"nullable": false
+											}
+										},
+										"required": [
+											"matchingFields",
+											"fields",
+											"passFieldValues",
+											"delay",
+											"formId",
+											"type"
+										],
+										"type": "object"
+									}
+								]
 							},
-							"description": {
+							"enableAction": {
+								"type": "boolean"
+							},
+							"message": {
 								"type": "string"
 							},
 							"title": {

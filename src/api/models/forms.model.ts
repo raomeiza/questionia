@@ -42,8 +42,23 @@ const Form = model('Form', new Schema({
       thankYouScreen: {
         enabled: { type: Boolean, default: false, required: false },
         title: { type: String, default: 'Thank You', required: false, maxlength: 100 },
-        description: { type: String, default: 'Your response has been recorded.', required: false, maxlength: 300 },
-        btnTxt: { type: String, default: 'Done', required: false, maxlength: 15 },
+        message: { type: String, default: 'Your response has been recorded.', required: false, maxlength: 300 },
+        enableAction: { type: Boolean, default: false, required: false },
+        action: {
+          type: { type: String, enum: ['qrCode', 'link', 'form'], required: false },
+          source: { type: String, enum: ['responseId', 'formField'], required: false },
+          formField: { type: String, required: false },
+          download: { type: Boolean, default: false, required: false },
+          copyCode: { type: Boolean, default: false, required: false },
+          linkText: { type: String, required: false },
+          url: { type: String, required: false },
+          redirect: { type: Boolean, default: false, required: false },
+          delay: { type: Number, default: 0, required: false },
+          formId: { type: String, required: false },
+          passFieldValues: { type: Boolean, default: false, required: false },
+          fields: { type: [String], required: false },
+          matchingFields: { type: [String], required: false },
+        }
       },
       questionsConfig: {
         allowPrevious: { type: Boolean, default: true, required: false },

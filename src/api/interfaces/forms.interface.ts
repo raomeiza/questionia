@@ -12,8 +12,31 @@ export interface IFormConfig {
   thankYouScreen?: {
     enabled?: boolean,
     title?: string,
-    description?: string,
-    btnTxt?: string
+    message?: string,
+    enableAction?: boolean,
+    action?:
+       {
+          type: "qrCode";
+          source: "responseId" | "formField";
+          formField?: string;
+          download: boolean;
+          copyCode: boolean;
+        }
+      | {
+          type: "link";
+          linkText: string;
+          url: string;
+          redirect: boolean;
+          delay: number;
+        }
+      | {
+          type: "form";
+          formId: string;
+          delay: number;
+          passFieldValues: boolean;
+          fields: string[];
+          matchingFields: string[];
+        }
   },
   questionsConfig?: {
     allowPrevious?: boolean,
