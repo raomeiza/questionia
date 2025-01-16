@@ -35,7 +35,7 @@ const Form = model('Form', new Schema({
       welcomeScreen: {
         enabled: { type: Boolean, default: false, required: false },
         enableAgreeToTerms: { type: Boolean, default: false, required: false },
-        startBntTxt: { type: String, default: 'Start', required: false, maxlength: 15 },
+        startBtnTxt: { type: String, default: 'Start', required: false, maxlength: 15 },
         agreeToTermsTxt: { type: String, required: false, maxlength: 100 },
         alwaysAvailable: { type: Boolean, default: false, required: false },
       },

@@ -5,7 +5,7 @@ export interface IFormConfig {
   welcomeScreen?: {
     enabled?: boolean,
     enableAgreeToTerms?: boolean,
-    startBntTxt?: string,
+    startBtnTxt?: string,
     agreeToTermsTxt?: string,
     alwaysAvailable?: boolean
   },

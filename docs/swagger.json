@@ -97,7 +97,7 @@
 							"agreeToTermsTxt": {
 								"type": "string"
 							},
-							"startBntTxt": {
+							"startBtnTxt": {
 								"type": "string"
 							},
 							"enableAgreeToTerms": {
