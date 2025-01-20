@@ -1,10 +1,11 @@
 import { handleErrorResponse, handleSuccessResponse } from '../utils/response-handler'
-import formsServices from '../services/forms.services'
+import formsServices, { FormService } from '../services/forms.services'
 // import * as validations from '../validations/fom.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
 import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path, Patch, Header, Queries } from 'tsoa'
 import IFormService, { ICreate, IDelete, IResponse, IGet, IGetAll } from '../interfaces/forms.interface'
 import { signToken } from '../utils/tokenizer'
+import { checkPassword, hashPassword } from '../utils/password'
 
 @Route('form')
 @Tags('Forms')
@@ -294,9 +295,9 @@ export class formController extends Controller {
     }
   }
 
-  // route for changing the public status of a form
+  // route for making a form public
   @Tags('Forms')
-  @Patch('/:formId/public-status')
+  @Patch('/:formId/make-public')
   @Response(200, 'Form state changed successfully')
   @Response(409, 'Failed to change form state')
   @Response(401, 'Access denied')
@@ -304,7 +305,6 @@ export class formController extends Controller {
     @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
     @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
     @Path('formId') formId: string,
-    @Body() payload: { newState: boolean },
     @Request() request: any
   ): Promise<any> {
     try {
@@ -313,10 +313,83 @@ export class formController extends Controller {
         return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
       }
       // create the user
-      const form = await formsServices.changePublicStatus({ formId, userId: request.decodedUser.userId, newState: payload.newState })
+      const form = await formsServices.makePublic({ formId, userId: request.decodedUser.userId })
+      if(form?.password) {
+        delete form.password
+        form.passswordProtected = true
+      }
       const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
       // send the user a verification email
       sendSuccess(200, { success: true, data: form }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for making a form private
+  @Tags('Forms')
+  @Patch('/:formId/make-private')
+  @Response(200, 'Form state changed successfully')
+  @Response(409, 'Failed to change form state')
+  @Response(401, 'Access denied')
+  public async makePrivate(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Body() payload: { password: string },
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      if (!request.decodedUser.userId) {
+        return sendError(401, { success: false, status: 401, message: 'unauthorized', error: {} })
+      }
+
+      const hashedPassword = await hashPassword(payload.password)
+      // create the user
+      const form = await formsServices.makePrivate({ formId, userId: request.decodedUser.userId, password: hashedPassword })
+      if(form?.password) {
+        delete form.password
+        form.passswordProtected = true
+      }
+      const jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      // send the user a verification email
+      sendSuccess(200, { success: true, data: form }, /* set the jwt */ { 'x-auth-token': jwt })
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
+
+  // route for verifying a form password
+  @Tags('Forms')
+  @Post('/:formId/verify-password')
+  @Response(200, 'Password verified successfully')
+  @Response(409, 'Failed to verify password')
+  @Response(401, 'Access denied')
+  public async verifyPassword(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, message: string }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Body() payload: { password: string },
+  ): Promise<any> {
+    try {
+      const form = await formsServices.getPassword(formId)
+      if(!form) {
+        return sendError(400, { success: false, status: 400, message: 'Form not found', error: {} })
+      }
+      if(form?.access !== 'private') {
+        return sendError(401, { success: false, status: 401, message: 'Form is not password protected', error: {} })
+      }
+      const checked = checkPassword(payload.password, form.password)
+      if(!checked) {
+        return sendError(401, { success: false, status: 401, message: 'Invalid password', error: {} })
+      }
+      if(form?.password) {
+        delete form.password
+        form.passswordProtected = true
+      }
+      // send the user a verification email
+      sendSuccess(200, { success: true, message: 'Password verified successfully'})
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

@@ -92,22 +92,54 @@ const Form = model('Form', new Schema({
   },
   sx: { type: Object, default:null, required: false },
   webHooks: [String],
-  channels: {type: String, enum: ['whatsapp', 'telegram', 'web'], default: 'web', required: false},
+  channels: {type: String, enum: ['whatsapp', 'telegram', 'web', 'embedded'], default: 'web', required: false},
   createdAt: { type: Date, default: Date.now },
   responseCount: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
   type: { type: String, enum: ['form', 'survey', 'quiz', 'questionniar'], default: 'form' },
-  activationDate:{type: Date, default: new Date().toISOString()},
-  deactivatioDate:{type: Date},
-  deactivationReason:{type:String},
+  activatedOn:{type: Date, default: new Date().toISOString()},
+  deactivatedOn:{type: Date},
+  activatesOn:{type: Date},
+  deactivatesOn:{type: Date},
+  activationReason:{type:String},
+  deactivationReason:{type:String,},
+  responseCountThreshold:{type: Number, required: false}, // if response count is greater than this, form will be deactivated
   updatedAt: { type: Date, default: Date.now },
-  userId:{type: mongoose.Types.ObjectId, required: true},
+  userId:{type: mongoose.Types.ObjectId, required: true, ref: 'User'},
+  updatedBy: { type: mongoose.Types.ObjectId, required: false, default: null, ref: 'User' },
   isActive: {
     type: Boolean,
     default: true,
   },
-
+  activeStateChangedBy: { type: mongoose.Types.ObjectId, required: false, default: null, ref: 'User' },
+  activeStateChangedAt: { type: Date, default: Date.now },
+  activeStateChangedReason: { type: String, enum: ['expired', 'deactivated', 'deleted', 'response_count', 'system' ], default: 'system' },
+  draftForms: [{ type: mongoose.Types.ObjectId, required: false, default: null, ref: 'Form' }],
+  mainForm: { type: mongoose.Types.ObjectId, required: false, default: null, ref: 'Form' },
+  status: {
+    type: String,
+    enum: ['draft', 'active', 'inactive'],
+    default: 'draft',
+  },
+  statusChangedBy: { type: mongoose.Types.ObjectId, required: false, default: null, ref: 'User' },
+  statusChangedAt: { type: Date, default: Date.now },
+  access: {
+    type: String,
+    enum: ['public', 'private'],
+    default: 'public',
+  },
+  password: { type: String, required: false },
+  accessChangedBy: { type: mongoose.Types.ObjectId, required: false, default: null, ref: 'User' },
+  accessChangedAt: { type: Date, default: Date.now },
 }), 'form');
+
+// for every update, log the changes
+Form.schema.pre('findOneAndUpdate', function(this: mongoose.Query<any, any>, next) {
+  const update = this.getUpdate();
+  console.log('update', update);
+  // this.update({}, { $set: { updatedAt: new Date() } });
+  next();
+});
 
 export const ResponseModel = model('Response', new Schema({
   formId: { type: mongoose.Types.ObjectId, required: true },

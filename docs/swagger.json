@@ -314,16 +314,14 @@
 					"activationDate": {
 						"type": "string"
 					},
-					"expiryDate": {
-						"type": "string"
-					},
-					"social": {
+					"channels": {
 						"items": {
 							"type": "string",
 							"enum": [
 								"whatsapp",
 								"telegram",
-								"web"
+								"web",
+								"embedded"
 							]
 						},
 						"type": "array"
@@ -348,6 +346,47 @@
 							"quiz",
 							"questionniar"
 						]
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"draft",
+							"active",
+							"inactive"
+						]
+					},
+					"activatesOn": {
+						"type": "string"
+					},
+					"deactivatesOn": {
+						"type": "string"
+					},
+					"responseCountThreshold": {
+						"type": "number",
+						"format": "double"
+					},
+					"isActive": {
+						"type": "boolean"
+					},
+					"activeStateChangedReason": {
+						"type": "string",
+						"enum": [
+							"expired",
+							"deactivated",
+							"deleted",
+							"response_count",
+							"system"
+						]
+					},
+					"access": {
+						"type": "string",
+						"enum": [
+							"public",
+							"private"
+						]
+					},
+					"password": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -2148,9 +2187,166 @@
 				}
 			}
 		},
-		"/form/{formId}/public-status": {
+		"/form/{formId}/make-public": {
 			"patch": {
 				"operationId": "MakePublic",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to change form state"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/form/{formId}/make-private": {
+			"patch": {
+				"operationId": "MakePrivate",
 				"responses": {
 					"200": {
 						"description": "",
@@ -2309,12 +2505,189 @@
 						"application/json": {
 							"schema": {
 								"properties": {
-									"newState": {
-										"type": "boolean"
+									"password": {
+										"type": "string"
 									}
 								},
 								"required": [
-									"newState"
+									"password"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/form/{formId}/verify-password": {
+			"post": {
+				"operationId": "VerifyPassword",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"message",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Failed to verify password"
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"additionalProperties": false,
+											"type": "object"
+										},
+										"message": {
+											"type": "string"
+										},
+										"status": {
+											"type": "number",
+											"format": "double"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												false
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"error",
+										"message",
+										"status",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Forms",
+					"Forms"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "formId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"password": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"password"
 								],
 								"type": "object"
 							}

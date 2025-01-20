@@ -63,12 +63,19 @@ const models: TsoaRoute.Models = {
             "header": {"dataType":"string","required":true},
             "sx": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
             "activationDate": {"dataType":"string"},
-            "expiryDate": {"dataType":"string"},
-            "social": {"dataType":"array","array":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]},{"dataType":"enum","enums":["web"]}]}},
+            "channels": {"dataType":"array","array":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["whatsapp"]},{"dataType":"enum","enums":["telegram"]},{"dataType":"enum","enums":["web"]},{"dataType":"enum","enums":["embedded"]}]}},
             "webHooks": {"dataType":"array","array":{"dataType":"string"}},
             "collectionGroup": {"dataType":"string"},
             "userId": {"dataType":"string","required":true},
             "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["form"]},{"dataType":"enum","enums":["survey"]},{"dataType":"enum","enums":["quiz"]},{"dataType":"enum","enums":["questionniar"]}]},
+            "status": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["draft"]},{"dataType":"enum","enums":["active"]},{"dataType":"enum","enums":["inactive"]}]},
+            "activatesOn": {"dataType":"string"},
+            "deactivatesOn": {"dataType":"string"},
+            "responseCountThreshold": {"dataType":"double"},
+            "isActive": {"dataType":"boolean"},
+            "activeStateChangedReason": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["expired"]},{"dataType":"enum","enums":["deactivated"]},{"dataType":"enum","enums":["deleted"]},{"dataType":"enum","enums":["response_count"]},{"dataType":"enum","enums":["system"]}]},
+            "access": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["public"]},{"dataType":"enum","enums":["private"]}]},
+            "password": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -457,7 +464,7 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.patch('/form/:formId/public-status',
+        app.patch('/form/:formId/make-public',
             ...(fetchMiddlewares<RequestHandler>(formController)),
             ...(fetchMiddlewares<RequestHandler>(formController.prototype.makePublic)),
 
@@ -466,7 +473,6 @@ export function RegisterRoutes(app: Router) {
                     sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
                     sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
                     formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
-                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"newState":{"dataType":"boolean","required":true}}},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
@@ -480,6 +486,63 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.makePublic.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/form/:formId/make-private',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.makePrivate)),
+
+            function formController_makePrivate(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"data":{"dataType":"any","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"password":{"dataType":"string","required":true}}},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.makePrivate.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/form/:formId/verify-password',
+            ...(fetchMiddlewares<RequestHandler>(formController)),
+            ...(fetchMiddlewares<RequestHandler>(formController.prototype.verifyPassword)),
+
+            function formController_verifyPassword(request: any, response: any, next: any) {
+            const args = {
+                    sendSuccess: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"success":{"dataType":"enum","enums":[true],"required":true}}},
+                    sendError: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"object","required":true},"message":{"dataType":"string","required":true},"status":{"dataType":"double","required":true},"success":{"dataType":"enum","enums":[false],"required":true}}},
+                    formId: {"in":"path","name":"formId","required":true,"dataType":"string"},
+                    payload: {"in":"body","name":"payload","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"password":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new formController();
+
+
+              const promise = controller.verifyPassword.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

@@ -19,7 +19,7 @@ export class FormService implements IFormService {
   async create(resource: ICreate): Promise<any> {
     try {
       const form = await this.model.create(resource);
-      return form;
+      return await sanitizeFormResponse(form.toObject());
     } catch (err: any) {
       throw {
         message: err.message || "Form not created",
@@ -51,8 +51,10 @@ export class FormService implements IFormService {
         updateQuery,
         { new: true }
       );
-      //@ts-ignore
-      return form;
+      if (!form) {
+        throw { message: "form not found", status: 404 };
+      }
+      return await sanitizeFormResponse(form.toObject());
     } catch (err: any) {
       throw {
         message: err.message || "Form not update",
@@ -68,11 +70,10 @@ export class FormService implements IFormService {
       const form = await this.model.findByIdAndUpdate(resource.formId, {
         $inc: { views: 1 },
       });
-      if (form) {
-        return form;
-      } else {
+      if(!form) {
         throw { message: "form not found", status: 404 };
       }
+      return await sanitizeFormResponse(form.toObject());
     } catch (err: any) {
       throw {
         message: err.message || "Form not found",
@@ -327,14 +328,63 @@ return await this.responseModel.aggregate([
     }
   }
 
-  async changePublicStatus({ formId, userId, newState }: { formId: string, userId: string, newState: boolean }): Promise<any> {
+  // async changePublicStatus({ formId, userId, newState }: { formId: string, userId: string, newState: boolean }): Promise<any> {
+  //   try {
+  //     const form = await this.model.findOneAndUpdate({ _id: formId, userId }, { isPublic: newState }, { new: true });
+  //     return form;
+  //   }
+  //   catch (err: any) {
+  //     throw {
+  //       message: err.message || "Failed to change the activation status",
+  //       error: err,
+  //       status: err.status || err.errorStatus || 404,
+  //     };
+  //   }
+  // }
+
+  async makePrivate({ formId, userId, password }: { formId: string, userId: string, password: string }): Promise<any> {
     try {
-      const form = await this.model.findOneAndUpdate({ _id: formId, userId }, { isPublic: newState }, { new: true });
+      const form = await this.model.findOneAndUpdate({ _id: formId, userId }, 
+        {
+          password,
+          access: 'private',
+          accessChangedBy: userId,
+          accessChangedAt: new Date().toISOString()
+        }, { new: true }).select('access');
       return form;
-    }
-    catch (err: any) {
+    } catch (err: any) {
       throw {
         message: err.message || "Failed to change the activation status",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async makePublic({ formId, userId }: { formId: string, userId: string }): Promise<any> {
+    try {
+      const form = await this.model.findOneAndUpdate({ _id: formId, userId },
+        {
+          access: 'public',
+          accessChangedBy: userId,
+          accessChangedAt: new Date().toISOString()
+        }, { new: true }).select('access password');
+      return form;
+    } catch (err: any) {
+      throw {
+        message: err.message || "Failed to change the activation status",
+        error: err,
+        status: err.status || err.errorStatus || 404,
+      };
+    }
+  }
+
+  async getPassword(formId: string): Promise<any> {
+    try {
+      return await this.model.findById(formId).select('password access');
+    } catch (err: any) {
+      throw {
+        message: err.message || "Failed to fetch form",
         error: err,
         status: err.status || err.errorStatus || 404,
       };
@@ -367,14 +417,24 @@ const generateJWT = (user: {
   return signToken(user);
 };
 
-const customResponse = async (userObj: any) => {
-  delete userObj.password;
-  delete userObj.mobileToken;
-  delete userObj.emailToken;
-  delete userObj.passwordResetToken;
-  delete userObj.passwordResetExpiry;
-  delete userObj.__v;
-  return userObj;
+const sanitizeFormResponse = async (form: any) => {
+  if(form.password) {
+    delete form.password;
+    form.passwordProtected = true;
+    form.form.config.passwordProtected = true;
+  }
+  return form;
+};
+
+const sanitizeArrayFormResponse = async (forms: any[]) => {
+  return Promise.all(forms.map(async (form) => {
+    if(form.password) {
+      delete form.password;
+      form.passwordProtected = true;
+      form.form.config.passwordProtected = true;
+    }
+    return form;
+  }));
 };
 
 async function generateToken() {
