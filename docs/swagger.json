@@ -385,8 +385,8 @@
 							"private"
 						]
 					},
-					"password": {
-						"type": "string"
+					"passwordProtected": {
+						"type": "boolean"
 					}
 				},
 				"required": [

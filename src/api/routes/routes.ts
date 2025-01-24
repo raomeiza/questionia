@@ -75,7 +75,7 @@ const models: TsoaRoute.Models = {
             "isActive": {"dataType":"boolean"},
             "activeStateChangedReason": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["expired"]},{"dataType":"enum","enums":["deactivated"]},{"dataType":"enum","enums":["deleted"]},{"dataType":"enum","enums":["response_count"]},{"dataType":"enum","enums":["system"]}]},
             "access": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["public"]},{"dataType":"enum","enums":["private"]}]},
-            "password": {"dataType":"string"},
+            "passwordProtected": {"dataType":"boolean"},
         },
         "additionalProperties": false,
     },
