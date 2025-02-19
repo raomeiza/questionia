@@ -380,7 +380,7 @@ export class formController extends Controller {
       if(form?.access !== 'private') {
         return sendError(401, { success: false, status: 401, message: 'Form is not password protected', error: {} })
       }
-      const checked = checkPassword(payload.password, form.password)
+      const checked = await checkPassword(payload.password, form.password)
       if(!checked) {
         return sendError(401, { success: false, status: 401, message: 'Invalid password', error: {} })
       }

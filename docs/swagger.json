@@ -238,8 +238,16 @@
 						},
 						"type": "object"
 					},
-					"questionsConfig": {
+					"questions": {
 						"properties": {
+							"type": {
+								"type": "string",
+								"enum": [
+									"default",
+									"paged",
+									"single"
+								]
+							},
 							"allowEdit": {
 								"type": "boolean"
 							},
@@ -385,8 +393,8 @@
 							"private"
 						]
 					},
-					"passwordProtected": {
-						"type": "boolean"
+					"password": {
+						"type": "string"
 					}
 				},
 				"required": [

@@ -60,9 +60,10 @@ const Form = model('Form', new Schema({
           matchingFields: { type: [String], required: false },
         }
       },
-      questionsConfig: {
+      questions: {
         allowPrevious: { type: Boolean, default: true, required: false },
         allowEdit: { type: Boolean, default: true, required: false },
+        type: { type: String, enum: ['default', 'paged', 'single'], default: 'default', required: false },
       },
       // variant: { type: String, enum: ['outlined', 'standard', 'contained', 'text', 'filled'], default: 'outlined', required: false },
       // sx: { type: Object, default:null, required: false },

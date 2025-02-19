@@ -38,9 +38,10 @@ export interface IFormConfig {
           matchingFields: string[];
         }
   },
-  questionsConfig?: {
+  questions?: {
     allowPrevious?: boolean,
-    allowEdit?: boolean
+    allowEdit?: boolean,
+    type?: 'default' | 'paged' | 'single'
   }
 }
 
@@ -66,7 +67,7 @@ export const sampleFormConfig: IFormConfig = {
       delay: 0
     }
   },
-  questionsConfig: {
+  questions: {
     allowPrevious: true,
     allowEdit: true
   }
