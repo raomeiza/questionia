@@ -22,25 +22,6 @@ import miniAppRouter from './controllers/mini-app';
 
 telegramInstance
 const intervals = [ 3, 5,  7, 10];
-// let pingInterval = setInterval(async() => {
-//   try {
-//     await telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-//   } catch (error) {
-//     console.log(error)
-//   }
-//   // telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${intervals[Math.floor(Math.random() * intervals.length)]} minutes`)
-// }, 1000 * 60 * intervals[Math.floor(Math.random() * intervals.length)]);
-
-// const resetInterval = () => {
-//   clearInterval(pingInterval);
-//   const newInterval = intervals[Math.floor(Math.random() * intervals.length)];
-//   console.log(`New interval is ${newInterval} minutes`)
-//   pingInterval = setInterval(() => {
-//     telegramInstance.sendMessage("-4018339430", `I am still alive. I will ping you again in ${newInterval} minutes`)
-//   }, 1000 * 60 * newInterval);
-// }
-
-// console.log(BASE_URL)
 // Instance of express
 const app: express.Application = express();
 
@@ -64,11 +45,6 @@ app.get('/ping', (req, res) => {
 }
 );
 
-// app.use('*', (req, res, next) => {
-//   resetInterval();
-//   next();
-// })
-
 app.use('/mini-app', miniAppRouter);
 
 app.use('/paystack', paystack);
@@ -90,34 +66,15 @@ app.use('/api-docs', basicAuth({
   realm: 'Imb4T3st4pp',
 }), swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/app', express.static(FRONT_END_PATH));
-app.use('/app', (req, res, next) => {
-  // create a function to check if the request is for a static file
-  const isStaticFile = (req.url.indexOf('.') > -1);
-  if (isStaticFile) {
-    res.status(404).json({
-      message: 'Not Found',
-      status: 404,
-    });
-  } else {
-    next()
-  }
-});
-
-// catche all successfull requests for static  files
+// serve the public files
+// app.use(express.static(FRONT_END_PATH));
+app.use(express.static(PUBLIC_DIR));
+// every request for public files that is found should be cached for 3 days
 app.use('/', (req, res, next) => {
-  // if url is /, then redirect to frontend
-  if (req.url === '/' || req.url.indexOf('/app') > -1) {
-    res.redirect(`${BASE_URL}app`);
-  }
-
-  else {
-    // set header to allow caching for 3 days
-    res.setHeader('Cache-Control', 'public, max-age=259200');
-    next();
-  }
+  // set header to allow caching for 3 days
+  res.setHeader('Cache-Control', 'public, max-age=259200');
+  next();
 })
-app.use('/', express.static(PUBLIC_DIR));
 
 app.use('/', (req, res, next) => {
   // if not found, then redirect to remove catche and send the request to the frontend
@@ -125,6 +82,7 @@ app.use('/', (req, res, next) => {
     // remove the cache header
     res.removeHeader('Cache-Control');
   }
+  next();
 })
 
 // create a post route handler for revalidating token
