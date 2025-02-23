@@ -240,6 +240,12 @@
 					},
 					"questions": {
 						"properties": {
+							"progressType": {
+								"type": "string"
+							},
+							"showProgress": {
+								"type": "boolean"
+							},
 							"type": {
 								"type": "string",
 								"enum": [

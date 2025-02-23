@@ -64,6 +64,8 @@ const Form = model('Form', new Schema({
         allowPrevious: { type: Boolean, default: true, required: false },
         allowEdit: { type: Boolean, default: true, required: false },
         type: { type: String, enum: ['default', 'paged', 'single'], default: 'default', required: false },
+        showProgress: { type: Boolean, default: true, required: false },
+        progressType: { type: String, required: false },
       },
       // variant: { type: String, enum: ['outlined', 'standard', 'contained', 'text', 'filled'], default: 'outlined', required: false },
       // sx: { type: Object, default:null, required: false },

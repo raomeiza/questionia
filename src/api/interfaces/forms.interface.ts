@@ -41,7 +41,9 @@ export interface IFormConfig {
   questions?: {
     allowPrevious?: boolean,
     allowEdit?: boolean,
-    type?: 'default' | 'paged' | 'single'
+    type?: 'default' | 'paged' | 'single',
+    showProgress?: boolean,
+    progressType?: string,
   }
 }
 
