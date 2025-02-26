@@ -6,6 +6,7 @@ import logger from './api/utils/logger';
 import sendMail from './api/utils/email';
 import fs from 'fs';
 import path from 'path';
+import { Server as SocketIOServer } from 'socket.io';
 
 const options = {
   key: fs.readFileSync(path.resolve(__dirname, '../cert/privkey.pem')),
@@ -23,10 +24,29 @@ const server = NODE_ENV === 'production' ? createHttpsServer(options, app).liste
   });
 
   console.info(`Server listening on ${BASE_URL}`)
-}) : app.listen(PORT, async () => {
+}) : createServer(app).listen(PORT, () => {
   console.info(`Server listening on ${BASE_URL}`)
-
 });
+
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  socket.on('signal', (data) => {
+    const { signal, to } = data;
+    io.to(to).emit('signal', { signal, from: socket.id });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected:', socket.id);
+  });
+});
+
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
   // sendSms('+2347044124767', `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`);
