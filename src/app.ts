@@ -1,5 +1,5 @@
-import {createServer} from 'http';
-import {createServer as createHttpsServer} from 'https';
+import { createServer } from 'http';
+import { createServer as createHttpsServer } from 'https';
 import app from './api'; // index.ts
 import { PORT, BASE_URL, NODE_ENV, ADMIN_EMAIL } from './config';
 import logger from './api/utils/logger';
@@ -12,10 +12,10 @@ const options = {
   key: fs.readFileSync(path.resolve(__dirname, '../cert/privkey.pem')),
   cert: fs.readFileSync(path.resolve(__dirname, '../cert/fullchain.pem')),
 };
+
 // Spin server
 const server = NODE_ENV === 'production' ? createHttpsServer(options, app).listen(PORT, async () => {
-  // in here, lets create a http server that will be redirecting to the https server
-  // this is to ensure that the server is accessible on all platforms
+  // Create an HTTP server that redirects to the HTTPS server
   createServer((req: any, res: any) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
@@ -23,14 +23,15 @@ const server = NODE_ENV === 'production' ? createHttpsServer(options, app).liste
     sendMail('The redirect server is running', 'Redirect Server', ADMIN_EMAIL); // send email to the admin
   });
 
-  console.info(`Server listening on ${BASE_URL}`)
+  console.info(`Server listening on ${BASE_URL}`);
 }) : createServer(app).listen(PORT, () => {
-  console.info(`Server listening on ${BASE_URL}`)
+  console.info(`Server listening on ${BASE_URL}`);
 });
 
 const io = new SocketIOServer(server, {
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
   },
 });
 
@@ -49,11 +50,10 @@ io.on('connection', (socket) => {
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-  // sendSms('+2347044124767', `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`);
   sendMail(
     `Uncaught Exception: ${err.message} at ${new Date().toUTCString()}`,
     'Questioniar shutting down due to uncaught exception',
-    'blesseth.omeiza@gmail.com',
+    ADMIN_EMAIL,
   );
   logger.error(err);
   logger.info('Shutting down due to uncaught exception');
@@ -62,12 +62,11 @@ process.on('uncaughtException', (err) => {
 });
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err:any) => {
-  // sendSms('+2347044124767', `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`);
+process.on('unhandledRejection', (err: any) => {
   sendMail(
     `Unhandled Promise rejection: ${err.message} at ${new Date().toUTCString()}`,
     'Questioniar shutting down due to unhandled promise rejection',
-    'blesseth.omeiza@gmail.com',
+    ADMIN_EMAIL,
   );
   logger.error(err);
   // Close server & exit process
