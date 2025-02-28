@@ -37,16 +37,31 @@ const io = new SocketIOServer(server, {
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
+  socket.emit("me", socket.id);
 
   socket.on('signal', (data) => {
     const { signal, to } = data;
     io.to(to).emit('signal', { signal, from: socket.id });
   });
 
+  socket.on("callUser", (data) => {
+    io.to(data.userToCall).emit('callUser', { signal: data.signalData, from: data.from, name: data.name });
+  });
+
+  socket.on("callAccepted", (data) => {
+    io.to(data.to).emit('callAccepted', data.signal);
+  });
+
+  socket.on('callEnded', (data) => {
+    io.to(data.to).emit('callEnded', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);
+    socket.broadcast.emit('callEnded', { id: socket.id });
   });
 });
+
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
