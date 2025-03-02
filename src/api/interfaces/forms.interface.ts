@@ -316,6 +316,8 @@ export interface ICreate {
   activeStateChangedReason?: 'expired' | 'deactivated' | 'deleted' | 'response_count' | 'system'
   access?: "public" | "private" //| "protected"
   password?: string
+  answers?: { [key: string]: any }
+  maxAllowedTime?: number
 }
 
 export const sampleCreate: ICreate = {
