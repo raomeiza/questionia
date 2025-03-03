@@ -88,8 +88,8 @@ const Form = model('Form', new Schema({
     noSubmit: { type: Boolean, default:false, required: false   },
     beforeSubmit: { type: String, required: false   },
     clearForm: { type: Object, required: false  },
-    maxAllowedTime: { type: Number, required: false  },
   },
+  maxAllowedTime: { type: Number, required: false  },
   answers: { type: Object, required: false  },
   header: {
     type: String,

@@ -418,6 +418,29 @@ export class formController extends Controller {
       return await handleErrorResponse(sendError, err)
     }
   }
+  // create a patch route to update a form as a quize setting the answers
+  @Tags('Forms')
+  @Patch('/:formId/max-time')
+  @Response(200, 'Answers updated successfully')
+  @Response(409, 'Failed to update answers')
+  @Response(401, 'Access denied')
+  public async updateQuizMaxTime(
+    @Res() sendSuccess: TsoaResponse<200, { success: true, message: string }>,
+    @Res() sendError: TsoaResponse<400 | 401 | 500, { success: false, status: number, message: string, error: object }>,
+    @Path('formId') formId: string,
+    @Body() payload: {  maxAllowedTime: number, type?: "quiz" },
+    @Request() request: any
+  ): Promise<any> {
+    try {
+      await decodeTokenMiddleware(request)
+      // @ts-ignore
+      const form = await formsServices.Update({ ...payload}, formId, request.decodedUser.userId)
+      // send the user a verification email
+      sendSuccess(200, { success: true, message: 'Answers updated successfully'})
+    } catch (err: any) {
+      return await handleErrorResponse(sendError, err)
+    }
+  }
 }
 
 //export the controller
