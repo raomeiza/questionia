@@ -262,6 +262,45 @@
 							}
 						},
 						"type": "object"
+					},
+					"stepper": {
+						"properties": {
+							"props": {
+								"properties": {
+									"shape": {
+										"type": "string",
+										"enum": [
+											"round",
+											"line"
+										]
+									},
+									"color": {
+										"type": "string",
+										"enum": [
+											"primary",
+											"secondary",
+											"inherit"
+										]
+									},
+									"variant": {
+										"type": "string",
+										"enum": [
+											"dots",
+											"progress",
+											"text"
+										]
+									}
+								},
+								"type": "object"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"name"
+						],
+						"type": "object"
 					}
 				},
 				"type": "object",

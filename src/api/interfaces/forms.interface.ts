@@ -44,7 +44,15 @@ export interface IFormConfig {
     type?: 'default' | 'paged' | 'single',
     showProgress?: boolean,
     progressType?: string,
-  }
+  },
+  stepper?: {
+    name: string;
+    props?: {
+      variant?: 'dots' | 'progress' | 'text';
+      color?: 'primary' | 'secondary' | 'inherit';
+      shape?: 'round' | 'line';
+    };
+  };
 }
 
 export const sampleFormConfig: IFormConfig = {
