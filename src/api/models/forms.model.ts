@@ -70,7 +70,7 @@ const Form = model('Form', new Schema({
       stepper: {
         name: { type: String, required: false },
         props: {
-          variant: { type: String, enum: ['dots', 'progress', 'text'], required: false },
+          variant: { type: String, enum: ['dots', 'progress', 'text', 'outlined'], required: false },
           color: { type: String, enum: ['primary', 'secondary', 'inherit'], required: false },
           shape: { type: String, enum: ['round', 'line'], required: false },
         },

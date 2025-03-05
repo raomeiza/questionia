@@ -48,7 +48,7 @@ export interface IFormConfig {
   stepper?: {
     name: string;
     props?: {
-      variant?: 'dots' | 'progress' | 'text';
+      variant?: 'dots' | 'progress' | 'text' | 'outlined';
       color?: 'primary' | 'secondary' | 'inherit';
       shape?: 'round' | 'line';
     };
