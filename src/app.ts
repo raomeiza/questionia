@@ -1,16 +1,22 @@
 import { createServer } from 'http';
 import { createServer as createHttpsServer } from 'https';
 import app from './api'; // index.ts
-import { PORT, BASE_URL, NODE_ENV, ADMIN_EMAIL } from './config';
+import { PORT, BASE_URL, NODE_ENV, ADMIN_EMAIL, PC } from './config';
 import logger from './api/utils/logger';
 import sendMail from './api/utils/email';
 import fs from 'fs';
 import path from 'path';
 import { Server as SocketIOServer } from 'socket.io';
 
-const options = {
+// if we are in local machine where pc is defined in the env file
+// we will use the local certificate and key file
+// else we will use the letsencrypt certificate and key file
+const options = PC === 'true' ? {
   key: fs.readFileSync(path.resolve(__dirname, '../cert/privkey.pem')),
   cert: fs.readFileSync(path.resolve(__dirname, '../cert/fullchain.pem')),
+} : {
+  key: fs.readFileSync('/etc/letsencrypt/live/questioniar.com/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/questioniar.com/fullchain.pem')
 };
 
 // Spin server
