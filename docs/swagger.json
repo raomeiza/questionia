@@ -287,7 +287,8 @@
 										"enum": [
 											"dots",
 											"progress",
-											"text"
+											"text",
+											"outlined"
 										]
 									}
 								},
