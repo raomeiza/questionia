@@ -25,3 +25,4 @@ export const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "blesseth.omeiza@gmail.com"
 export const TELEGRAM_BOT_TOKEN =process.env.NODE_ENV === "production" ? process.env.TELEGRAM_BOT_TOKEN : process.env.TELEGRAM_DEV_BOT_TOKEN;
 export const NEXT_APP_ID = process.env.NEXT_APP_ID;
+export const PC = process.env.PC; // this will be defined in the env file in local development
